@@ -5,8 +5,8 @@ copyright = ""
 
 theme = "minimo"
 
-disqusShortname = ""
-googleAnalytics = ""
+disqusShortname = "https-tojyouso-github-io-1"
+googleAnalytics = "UA-96562068-1"
 
 Paginate = 5
 preserveTaxonomyNames = true
@@ -22,11 +22,11 @@ enableEmoji = true
 defaultContentLanguage = "en"
 
 [params.info]
-description = "Actuary from Lagos/London living in Oslo"
+description = "but I tojyouso..."
 title404 = "Nothing's here!"
 
 [params.assets]
-favicon = "favicon.ico"
+# favicon = "favicon.ico"
 customCSS = ["css/custom.css"]
 customJS = ["js/custom.js"]
 gopher = "" # used in 404 template ( Generator: https://gopherize.me )
@@ -53,8 +53,9 @@ enable = true
 sticky = true
 
 [params.widgets]
-homepage = ["recent_posts"]
-sidebar = ["about","taxonomy_cloud"]
+# homepage = ["recent_posts"]
+# sidebar = ["about","taxonomy_cloud"]
+sidebar = ["taxonomy_cloud"]
 
 [params.opengraph.facebook]
 admins = [] # array of Facebook IDs
