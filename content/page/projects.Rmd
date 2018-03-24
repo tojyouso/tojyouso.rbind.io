@@ -1,0 +1,15 @@
+---
+title: Projects
+description:
+menu: main
+weight: -231
+output: html_document
+---
+
+#### Shiny apps
+
+Still need to sort out a proper domain to host these but here are a couple of `shiny` apps I've created:
+
++ [leagueViz](http://167.99.82.189:3838/football/league_viz/): an interactive app to visualise the league table in each of the main European leagues `r emo::ji("bicep")`
+
++ [leagueProj](http://167.99.82.189:3838/football/league_proj_viz/): an interactive app to visualise each team's performance this season versus previous seasons. Only for the Premier League at the moment `r emo::ji("call")`

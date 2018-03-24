@@ -1,4 +1,4 @@
-baseURL = "http://www.example.com"
+baseURL = "https://tojyouso.netlify.com/"
 title = "Toju Idowu"
 # for smart copyright line, leave this blank and check [params.copyright]
 copyright = ""
@@ -22,7 +22,7 @@ enableEmoji = true
 defaultContentLanguage = "en"
 
 [params.info]
-description = "Actuary from Lagoas/London living in Oslo"
+description = "Actuary from Lagos/London living in Oslo"
 title404 = "Nothing's here!"
 
 [params.assets]
@@ -69,16 +69,16 @@ page = "" # Twitter page username
 titleSeparator = "•"
 
 [params.social]
-codepen = "MunifTanjim"
+# codepen = "MunifTanjim"
 email = "mtidowu@gmail.com"
-facebook = "MunifTanjim"
-github = "MunifTanjim"
-gitlab = "MunifTanjim"
-instagram = "tojyouso"
-linkedin = "muniftanjim"
+# facebook = "MunifTanjim"
+github = "tojyouso"
+# gitlab = "MunifTanjim"
+#instagram = "@tojyouso"
+# linkedin = "muniftanjim"
 twitter = "@tojyouso"
-telegram = "MunifTanjim"
-google_scholar = "qc6CJjYAAAAJ"
+# telegram = "MunifTanjim"
+# google_scholar = "qc6CJjYAAAAJ"
 
 [taxonomies]
 author = "authors"
@@ -86,13 +86,13 @@ category = "categories"
 tag = "tags"
 
 [permalinks]
-page = "/:slug/"
+page = "/:year/:month/:day/:slug/"
 
 [[menu.main]]
 name = "Repo"
 weight = -10
 identifier = "repository"
-url = "https://github.com/MunifTanjim/minimo"
+url = "https://github.com/tojyouso/tojyouso.rbind.io"
 
 [blackfriday]
 hrefTargetBlank = true

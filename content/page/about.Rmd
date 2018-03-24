@@ -1,0 +1,11 @@
+---
+title: About
+description: Because I tojyouso...
+menu: main
+weight: -212
+output: html_document
+---
+
+I'm Toju (pronounced *toe-joo*). Learning `R` has had a profound impact on my career and has changed my life. This blog is a way for me to give back and to journal what I learn.
+
+I'll mostly write about cool little `R` tips I learn and also my thoughts behind some data visualisations I come across or create. And football. Plenty of football. `r emo::ji("smile")`

@@ -55,7 +55,7 @@ console.log('The meaning of life is: ', meaningOfLife);
 
 ---
 
-Who wants some table?
+Who wants some table?c("#FFFFFF", "#FFFFFF", "#FFFFFF")
 
   Minimo  |  Caption  | More Caption
  -------- | --------- | ------------
