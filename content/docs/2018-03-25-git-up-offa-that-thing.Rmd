@@ -1,0 +1,33 @@
+---
+title: Git Up Offa That Thing
+author: ''
+date: '2018-03-25'
+slug: git-up-offa-that-thing
+categories: []
+tags:
+  - git
+---
+
+To get my site working properly, I finally had to learn `git`. I am now in love with it. I don't know how I've lived without it for so long. I mean, I've known about it for a couple of years and started using it a little about 18 months ago but it was like I wasn't ready. It was because I didn't really understand how to use it. 
+
+
+## My favourite resources
+
+Here are a couple of resources (`R` related of course) I always have handy:
+
+1. [Karl Broman's tutorial](http://kbroman.org/github_tutorial/): this is simple and straight to the point. Best resource for anyone who wants to get up and started quickly with `git`.
+2. [Great book by Jenny Bryan](http://happygitwithr.com): This is an entire book with some awesome workflows.
+
+## Other tips
+
+1. Using `.gitignore` which is a text file where you can specify files and folders that `git` will ignore when you use `git add .`
+ 
+## Things to remember - my workflow
+
+1. `git add .`: this adds all changes in this directory
+2. `git commit -m "commit message"`: commits the files with commit message: "commit message"
+3. `git push`: uploads my stuff to the repository
+
+That's all for now but I will continue to edit this post as I get better at using `git`.
+
+<iframe width="560" height="315" src="https://www.youtube.com/watch?v=1_uNMy20qAI" frameborder="0" allowfullscreen></iframe>
