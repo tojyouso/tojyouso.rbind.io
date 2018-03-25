@@ -5,10 +5,14 @@ copyright = ""
 
 theme = "minimo"
 
+
+
 disqusShortname = "https-tojyouso-github-io-1"
 googleAnalytics = "UA-96562068-1"
 
-Paginate = 5
+# how many posts on each page
+Paginate = 7
+# keep the tags tiltle-ized - doesn't work. It actually just transfers funny characters to normal
 preserveTaxonomyNames = true
 
 enableRobotsTXT = true # generate robots.txt

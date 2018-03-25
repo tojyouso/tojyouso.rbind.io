@@ -1,0 +1,103 @@
+---
+title: Analysing the words I write in my journal
+author: tojyouso
+date: '2017-03-31'
+tags:
+  - Quantified Self
+  - Text Analysis
+slug: analysing-words-in-my-journal
+---
+
+
+
+<p>One area of my quantified journey that I have struggled with tracking is my mood and feelings. I’ve tried <a href="https://nomie.io">nomie</a> which is great, I’ve tried a couple of other mood tracker apps but after a while I lose motivation to record these things. They felt a bit meaningless because I had to record my mood at random points throughout the day, but I needed more context. I tried Evernote but it was too clunky and got in the way of how I normally use it; I also wanted something that was primarily mobile as I spend a lot of time out and about.</p>
+<p>This problem, coupled with my long-time desire to journal my life brought me to try out <a href="http://dayoneapp.com">Day One</a>. I love it. I love the design of the app and how easy it is to use. It has markdown elements - I’m a sucker for markdown, latex, rmarkdown, all those kind of things! I can put pictures in it and it backs up to a server! Best of all, it exports as a JSON file.</p>
+<p>It’s like having a twitter feed just for yourself.</p>
+<p>The only negative (and not even a real negative) is the price of the Mac app:</p>
+<div class="figure">
+<img src="/images/day_one_files/day_one_mac_app.png" />
+
+</div>
+<p>But honestly, I think it would be worth it - it’s a one off price, not a subscription. The only reason I haven’t made the commitment is I’m not sure I’ll still be on Mac in a year’s time.</p>
+<p>The plan is to add this as a section in my personal dashboard. But below, I’ve had a go at analysing the data and thrown up some possible tracking metrics. Let me know what you think!</p>
+<div id="when-and-how-much-do-i-journal" class="section level2">
+<h2>When and how much do I journal?</h2>
+<div id="a.-how-much-do-i-journal" class="section level3">
+<h3>A. How much do I journal?</h3>
+<p>I started journalling the day I got my iPhone in Sept 2016. In fact, this is the first entry:</p>
+<pre><code>## [1] &quot;Really enjoying my new iPhone. Apps are quite expensive though but they are of such high quality! I now see what everyone says about iOS being a more mature platform for developers.\n\nAnyway I&#39;m really going full force on quantifying myself. The plan is to make use of all my apps and really justify this £599 purchase!\n\nI love my phone!&quot;</code></pre>
+<p>I was really excited haha! Since then I’ve written 15426 words.</p>
+<p>I tried to keep up the journalling and I succeeded for the first couple of months but it tailed off and I only started again in the new year.</p>
+<p><img src="/docs/2017-03-31-analysing-the-words-i-write-in-my-journal_files/figure-html/unnamed-chunk-4-1.png" width="672" /></p>
+<p>I wish I had recorded more during that end of year period, it was an important part of my life - my wife and I were considering a move from London to Oslo! (spoiler alert - I’m writing this on our new dining table in Oslo). Since then I’ve set my self a target of an average of 150 words a days. This is how I track this monthly:</p>
+<p><img src="/docs/2017-03-31-analysing-the-words-i-write-in-my-journal_files/figure-html/unnamed-chunk-5-1.png" width="672" /></p>
+<p>It’s not the end of the month yet and I have hit my target of 4500 words!</p>
+<p>I’m also trialling the new <a href="https://github.com/jayjacobs/ggcal">ggcal package</a> as a way to show how often I journal. I like it! I have also moved to using the colour palette from the <a href="https://cran.r-project.org/web/packages/viridis/vignettes/intro-to-viridis.html">viridis package</a>, great for those who are colour blind and I like how bright the colours are.</p>
+<p>The calendar chart makes it really clear to see that I wrote a lot of words on the third Sunday of March. That was the last weekend we spent with our family and with our church in London before we moved to Oslo a few days later. I really wanted to capture as much as I could about that weekend.</p>
+<p><img src="/docs/2017-03-31-analysing-the-words-i-write-in-my-journal_files/figure-html/unnamed-chunk-6-1.png" width="672" /></p>
+</div>
+<div id="b.-when-do-i-journal" class="section level3">
+<h3>B. When do I journal?</h3>
+<p>The great thing about having full dates and times attached to each journal entry is that I can look at the specific times during the day and week that I journal.</p>
+<p>The distribution of times during the day surprised me a little bit. I was expecting to see my commuting hours coming out. I’m not sure why I journal so much around 8 o’clock. What am I usually doing at 8 in the evening? Eating dinner and watching T.V. I guess. It could also be the dreaded curse of small sample sizes - there are only about 250 notes.</p>
+<p><img src="/docs/2017-03-31-analysing-the-words-i-write-in-my-journal_files/figure-html/unnamed-chunk-7-1.png" width="672" /></p>
+<p>4 a.m. is the only hour of the day I haven’t journalled yet.</p>
+<p>In terms of days in the week, I journal most on Sundays - again not surprised by that given that’s usually my day of reflection. We also used to have a very long London underground journey to and from church without internet - so I used to journal then to pass time. Saturday is low because I’m probably busy doing something else!</p>
+<p><img src="/docs/2017-03-31-analysing-the-words-i-write-in-my-journal_files/figure-html/unnamed-chunk-8-1.png" width="672" /></p>
+<p>That downward trend as the week progresses is random… Can’t think of any reason why it would be like that.</p>
+</div>
+</div>
+<div id="what-do-i-journal-about" class="section level2">
+<h2>What do I journal about?</h2>
+<p>Now I’ve explored when and how I journal, I want to explore what I actually write. I used the amazing <a href="http://tidytextmining.com">tidytext package</a> to do almost all of the following analysis.</p>
+<p>First, let’s look at my top ten words. No surprise that Steph is up there amongst the top given that’s my wife’s name. Day and time feature a lot, as do morning and night - I imagine they’re to do with me describing a time period like <code>I had a great day</code> or <code>Last night was so much fun</code>.</p>
+<p><em>NB: I removed all stop words as well as “dayone” and “moment” as those two words our automatically added when a journal entry includes a picture</em></p>
+<pre><code>## # A tibble: 10 x 2
+##    word        n
+##    &lt;chr&gt;   &lt;int&gt;
+##  1 time       65
+##  2 steph      56
+##  3 day        47
+##  4 lot        39
+##  5 nice       35
+##  6 feel       34
+##  7 night      30
+##  8 love       28
+##  9 morning    28
+## 10 haha       25</code></pre>
+<p>Another thing I measure is my vocabulary. I want to increase my vocabulary, although this will be difficult this year as I’m very actively trying to learn Norwegian. Is it improving? Hard to tell, I need to wait for this graph to mature and flatten.</p>
+<p><img src="/docs/2017-03-31-analysing-the-words-i-write-in-my-journal_files/figure-html/unnamed-chunk-10-1.png" width="672" /></p>
+<p>Kinda looks like March had a steeper decrease than expected.</p>
+<p>Putting this on a log scale makes the March drop much starker.</p>
+<p><img src="/docs/2017-03-31-analysing-the-words-i-write-in-my-journal_files/figure-html/unnamed-chunk-11-1.png" width="672" /></p>
+<p>Or one could argue that March is the normal rate and it was in October and November 2016 that the rate was high and then it slowed down as the year turned. The dotted line shows a linear trend which means the slow down of new words is constant each month.</p>
+<div id="what-kind-of-feelings-do-my-words-engender" class="section level3">
+<h3>What kind of feelings do my words engender?</h3>
+<p>The <code>tidytext</code> package allows us to do some sentiment analysis. In simple terms, each word is assigned to an emotion and that emotion is categorised as positive or negative. I then take the difference between the number of positive words and the number of negative words to get a sentiment score. Therefore if the score was positive, I wrote more positive than negative words that day.</p>
+<p><em>NB: the sentiment analysis below only looks at individual words so a sentence like <code>I am not happy</code> will be positive as <code>happy</code> is a positve word. I had trouble breaking the journal entries into sentences for sentence level sentiment analysis so we’ll have to make do with this for now.</em></p>
+<p><img src="/docs/2017-03-31-analysing-the-words-i-write-in-my-journal_files/figure-html/unnamed-chunk-13-1.png" width="672" /></p>
+<p>Turns out I’m usually positive - probably because I’ve been blessed with a lot of good things in my life. I checked what happened at the end of October 2016 where there is a small cluster of negativity - it was when my wife AND my mum were ill :(. The negative days are quite sporadic and it’s rare to see more than one in a row. That makes me happy, it means there isn’t some underlying unhappiness. The fact that there aren’t clusters of bad days also suggests that things that make me sad or angry or experience other negative emotions are probably not that big a deal if they only last one day. That’s an important realisation and one I’ll keep in mind in the future when I’m having a bad day.</p>
+<p>There are also other emotions that the sentiment analysis brought out. I played with the chart for quite some time but I still think it is too busy. I did manage to arrange positive sentiments on the left and negative on the right!</p>
+<p><img src="/docs/2017-03-31-analysing-the-words-i-write-in-my-journal_files/figure-html/unnamed-chunk-14-1.png" width="672" /></p>
+<p>The positive emotions are all highly correlated with the peak in December 2016 and trough the next month. The negative words are all a bit different. The spike in Feb of disgust is interesting and I spent October being angry and sad (that’s probably driven by the end of October times when my wife and mum were ill). I will need to explore February’s disgust.</p>
+<p>I can also show which of my most common words contribute most to the positive and negative sentiments. <code>love</code>, <code>happy</code> and <code>god</code> are my most common positive words :). I do write <code>Thank God</code> quite often! Money is quite high up there too haha and so is sex ;).</p>
+<p><img src="/docs/2017-03-31-analysing-the-words-i-write-in-my-journal_files/figure-html/unnamed-chunk-15-1.png" width="672" /></p>
+<p>I can also use my new favourite calendar plot to see when I write the most positive words. Ultimately, I want to be able to click on a date and see what notes I wrote there but that is way beyond my current ability right now.</p>
+<p><img src="/docs/2017-03-31-analysing-the-words-i-write-in-my-journal_files/figure-html/unnamed-chunk-16-1.png" width="672" /></p>
+<p>Lastly, a text analysis would not be complete without a word-cloud.</p>
+<p><img src="/docs/2017-03-31-analysing-the-words-i-write-in-my-journal_files/figure-html/unnamed-chunk-17-1.png" width="672" /></p>
+</div>
+</div>
+<div id="future-work" class="section level2">
+<h2>Future work</h2>
+<p>There were a few things I wanted to do but ran out of time and this post was getting quite long. I would like to explore the sentence sentiment analysis. I’d also like to explore how the words I write are related. Which words frequently appear together for example.</p>
+<p>The Day One app also records location and weather with each note. It would be good to explore these at some point.</p>
+<p>Now that I’ve done this for my Day One journal, I want to apply this to all other text based files in my life - WhatsApp conversations, text messages, twitter feeds. There’s a lot out there that is very much accessible and it will be fun to see what I can learn from them.</p>
+</div>
+<div id="final-words" class="section level2">
+<h2>Final words</h2>
+<p>This was by far the most fun analysis project I’ve done so far. Not only was programming and writing the blog post fun, going back through old diary entries was really interesting. I wanted to put a bit more out on the blog but a lot of it is very personal as you can imagine.</p>
+<p>I’ve only been journalling for a very short time and I can’t wait to see what this blog post will look like when I update it at the end of the year.</p>
+<p>I showed this to my wife and she said it really captured who I am - someone who loves God, his family and friends and is happy! My three top positive words :).</p>
+<p>If you have any questions on how I did any of the above, get in touch!</p>
+</div>
