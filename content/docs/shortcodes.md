@@ -8,6 +8,7 @@ tags:
   - shortcode
 slug: shortcodes
 toc: true
+draft: true
 ---
 Minimo comes with several shortcodes built-in.
 
@@ -88,12 +89,12 @@ Include content from seperate file with syntax highlighting.
 ### file: Usage Example
 
 ```golang
-{{</* file "content/_index.md" */>}}
+{{</* file "content/_index.Rmd" */>}}
 ```
 
 **Output**
 
-{{< file "content/_index.md" >}}
+{{< file "content/_index.Rmd" >}}
 
 ---
 
