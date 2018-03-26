@@ -1,0 +1,42 @@
+---
+title: Reeeeeeeeeeeegex!!!
+author: ''
+date: '2018-03-26'
+slug: reeeeeeeeeeeegex
+categories: []
+tags:
+  - R
+  - regex
+---
+
+What is `regex`? The official defintion from [wikipedia](https://en.wikipedia.org/wiki/Regular_expression) is _a sequence of characters that define a search pattern._ In English, it's basically a way of describing the structure of a character string and it's the most difficult thing to remember. So this a short and ever evolving post to store all the important `regex` or regular expressions I come across and expect to use often.
+
+I use `regex` most often when I need to replace some string during some data cleaning. My current favourite way to do this is to use `stringr::str_replace_all`. 
+
+Use `\\` to be able to reference (escape) special `R` characters like `*`, `\` and `.`.
+
+```{r}
+library(stringr)
+
+fake_word <- "Hell0, m! n@m* is T0ju"
+str_replace(fake_word, "\\*", "X")
+
+```
+
+Or to replace everything after a certain pattern
+
+```{r}
+str_replace_all(fake_word, "m.*", "")
+```
+
+## My favourite resources
+
+As always here are some great resources I keep coming back to:
+
+1. [RStudio cheatsheet](https://www.rstudio.com/wp-content/uploads/2016/09/RegExCheatsheet.pdf)
+
+I also heard of an RStudio add-in that helps you with this and I thought I bookmarked the tweet but can't find it right now.
+
+And lastly, here's Missy:
+
+<iframe width="560" height="315" src="https://www.youtube.com/embed/Ijn6scQ70xQ" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>

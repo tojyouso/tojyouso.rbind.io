@@ -1,0 +1,35 @@
+---
+title: Reeeeeeeeeeeegex!!!
+author: ''
+date: '2018-03-26'
+slug: reeeeeeeeeeeegex
+categories: []
+tags:
+  - R
+  - regex
+---
+
+
+
+<p>What is <code>regex</code>? The official defintion from <a href="https://en.wikipedia.org/wiki/Regular_expression">wikipedia</a> is <em>a sequence of characters that define a search pattern.</em> In English, it’s basically a way of describing the structure of a character string and it’s the most difficult thing to remember. So this a short and ever evolving post to store all the important <code>regex</code> or regular expressions I come across and expect to use often.</p>
+<p>I use <code>regex</code> most often when I need to replace some string during some data cleaning. My current favourite way to do this is to use <code>stringr::str_replace_all</code>.</p>
+<p>Use <code>\\</code> to be able to reference (escape) special <code>R</code> characters like <code>*</code>, <code>\</code> and <code>.</code>.</p>
+<pre class="r"><code>library(stringr)
+
+fake_word &lt;- &quot;Hell0, m! n@m* is T0ju&quot;
+str_replace(fake_word, &quot;\\*&quot;, &quot;X&quot;)</code></pre>
+<pre><code>## [1] &quot;Hell0, m! n@mX is T0ju&quot;</code></pre>
+<p>Or to replace everything after a certain pattern</p>
+<pre class="r"><code>str_replace_all(fake_word, &quot;m.*&quot;, &quot;&quot;)</code></pre>
+<pre><code>## [1] &quot;Hell0, &quot;</code></pre>
+<div id="my-favourite-resources" class="section level2">
+<h2>My favourite resources</h2>
+<p>As always here are some great resources I keep coming back to:</p>
+<ol style="list-style-type: decimal">
+<li><a href="https://www.rstudio.com/wp-content/uploads/2016/09/RegExCheatsheet.pdf">RStudio cheatsheet</a></li>
+</ol>
+<p>I also heard of an RStudio add-in that helps you with this and I thought I bookmarked the tweet but can’t find it right now.</p>
+<p>And lastly, here’s Missy:</p>
+<iframe width="560" height="315" src="https://www.youtube.com/embed/Ijn6scQ70xQ" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen>
+</iframe>
+</div>
