@@ -30,6 +30,8 @@ Here are a couple of resources (`R` related of course) I always have handy:
 4. `git commit -m "commit message"`: commits the files with commit message: "commit message"
 5. `git push`: uploads my stuff to the repository
 
+OR, just use RStudio, they've built it all in.
+
 That's all for now but I will continue to edit this post as I get better at using `git`.
 
 <iframe width="560" height="315" src="https://www.youtube.com/embed/1_uNMy20qAI" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
