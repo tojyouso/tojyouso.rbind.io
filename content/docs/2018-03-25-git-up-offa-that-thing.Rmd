@@ -24,9 +24,11 @@ Here are a couple of resources (`R` related of course) I always have handy:
  
 ## Things to remember - my workflow
 
-1. `git add .`: this adds all changes in this directory
-2. `git commit -m "commit message"`: commits the files with commit message: "commit message"
-3. `git push`: uploads my stuff to the repository
+1. `git clone "repository link"`: to link the repository to github
+2. `touch .gitignore`: ceates the `gitignore` text file
+3. `git add .`: this adds all changes in this directory
+4. `git commit -m "commit message"`: commits the files with commit message: "commit message"
+5. `git push`: uploads my stuff to the repository
 
 That's all for now but I will continue to edit this post as I get better at using `git`.
 
