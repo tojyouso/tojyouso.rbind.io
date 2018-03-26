@@ -26,7 +26,7 @@ str_replace(fake_word, "\\*", "X")
 Or to replace everything after a certain pattern
 
 ```{r}
-str_replace_all(fake_word, "m.*", "")
+str_replace(fake_word, "m.*", "")
 ```
 
 ## My favourite resources
