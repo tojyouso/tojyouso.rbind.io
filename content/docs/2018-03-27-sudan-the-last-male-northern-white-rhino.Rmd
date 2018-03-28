@@ -1,0 +1,59 @@
+---
+title: Sudan, the last male northern white rhino
+author: ''
+date: '2018-03-27'
+slug: sudan-the-last-male-northern-white-rhino
+categories: []
+tags:
+  - R
+  - ggplot
+  - rhino
+  - data viz
+---
+
+I recently read a story on the [guardian]() about the last male northern white rhino who died last week effectively rendering the species extinct. I had never heard of a northern white rhino so googled to see what it looked like and what kind of rhinos exist. So it turns out there are five main types of rhinos: _white_ , _black_, _Indian_, _Javan_ and _Sumatran_.[^rhino_types]
+
+Here's a picture of each one.
+
+They are awesome animals aren't they. 
+
+I was interested in this for a couple of reasosn:
+
+1. It's a sad story that I wanted to further highlight
+2. It's one of my dreams to go on safari
+3. I think rhinos are incredible animlas - their size, the thick grey hide and those majestic horns
+4. I want to highlight great things about Africa
+5. I thought writing this would give me a chance to practise some `R` skills
+
+## White rhinos
+
+First of all, _white_ has nothing to do with their colour as you can see above, they are actually grey like most rhinos. They are called _white_ because early English South African speakers settling in Africa mistook the German word _wijd_ meaning wide (as in wide mouthed rhino) for _white_. The wide mouth is the main difference between the white rhinos and the black rhinos.
+
+White rhinos can be further subdivided into two subspecies: northern and southern. The northern is smaller, less hairy and has a smaller horn.[^north_south]
+
+To really understand how large these animals (northern white rhinos) are I created a couple of small charts comparing them to me.
+
+```{r}
+library(tidyverse)
+library(patchwork)
+rhino_man <- data_frame(animal = c("man", "rhino"),
+                        weight = c(100, 2000),
+                        height = c(177, 190))
+
+rhino_man %>% 
+  ggplot(aes(x = animal, y = weight)) +
+  geom_col() +
+  ggplo
+```
+
+
+## Sudan
+
+## Hope
+
+## I really enjoyed writing about rhinos
+
+
+
+[^rhino_types]: read more about the difference rhino species [here](https://en.wikipedia.org/wiki/Rhinoceros)
+[^north_south]: read more about the difference between the northern and southern white rhinos [here](https://www.asiliaafrica.com/whats-the-difference-between-northern-and-southern-white-rhino/)

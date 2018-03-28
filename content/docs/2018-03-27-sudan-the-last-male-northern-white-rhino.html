@@ -1,0 +1,66 @@
+---
+title: Sudan, the last male northern white rhino
+author: ''
+date: '2018-03-27'
+slug: sudan-the-last-male-northern-white-rhino
+categories: []
+tags:
+  - R
+  - ggplot
+  - rhino
+  - data viz
+---
+
+
+
+<p>I recently read a story on the <a href="">guardian</a> about the last male northern white rhino who died last week effectively rendering the species extinct. I had never heard of a northern white rhino so googled to see what it looked like and what kind of rhinos exist. So it turns out there are five main types of rhinos: <em>white</em> , <em>black</em>, <em>Indian</em>, <em>Javan</em> and <em>Sumatran</em>.<a href="#fn1" class="footnoteRef" id="fnref1"><sup>1</sup></a></p>
+<p>Here’s a picture of each one.</p>
+<p>They are awesome animals aren’t they.</p>
+<p>I was interested in this for a couple of reasosn:</p>
+<ol style="list-style-type: decimal">
+<li>It’s a sad story that I wanted to further highlight</li>
+<li>It’s one of my dreams to go on safari</li>
+<li>I think rhinos are incredible animlas - their size, the thick grey hide and those majestic horns</li>
+<li>I want to highlight great things about Africa</li>
+<li>I thought writing this would give me a chance to practise some <code>R</code> skills</li>
+</ol>
+<div id="white-rhinos" class="section level2">
+<h2>White rhinos</h2>
+<p>First of all, <em>white</em> has nothing to do with their colour as you can see above, they are actually grey like most rhinos. They are called <em>white</em> because early English South African speakers settling in Africa mistook the German word <em>wijd</em> meaning wide (as in wide mouthed rhino) for <em>white</em>. The wide mouth is the main difference between the white rhinos and the black rhinos.</p>
+<p>White rhinos can be further subdivided into two subspecies: northern and southern. The northern is smaller, less hairy and has a smaller horn.<a href="#fn2" class="footnoteRef" id="fnref2"><sup>2</sup></a></p>
+<p>To really understand how large these animals (northern white rhinos) are I created a couple of small charts comparing them to me.</p>
+<pre class="r"><code>library(tidyverse)</code></pre>
+<pre><code>## ── Attaching packages ────────────────────────────────── tidyverse 1.2.1 ──</code></pre>
+<pre><code>## ✔ ggplot2 2.2.1.9000     ✔ purrr   0.2.4     
+## ✔ tibble  1.4.2          ✔ dplyr   0.7.4     
+## ✔ tidyr   0.8.0          ✔ stringr 1.2.0     
+## ✔ readr   1.1.1          ✔ forcats 0.2.0</code></pre>
+<pre><code>## ── Conflicts ───────────────────────────────────── tidyverse_conflicts() ──
+## ✖ dplyr::filter() masks stats::filter()
+## ✖ dplyr::lag()    masks stats::lag()
+## ✖ dplyr::vars()   masks ggplot2::vars()</code></pre>
+<pre class="r"><code>rhino_man &lt;- data_frame(animal = c(&quot;man&quot;, &quot;rhino&quot;),
+                        weight = c(100, 2000),
+                        )
+
+rhino_man %&gt;% 
+  ggplot(aes(x = animal, y = weight)) +
+  geom_col()</code></pre>
+<p><img src="/docs/2018-03-27-sudan-the-last-male-northern-white-rhino_files/figure-html/unnamed-chunk-1-1.png" width="672" /></p>
+</div>
+<div id="sudan" class="section level2">
+<h2>Sudan</h2>
+</div>
+<div id="hope" class="section level2">
+<h2>Hope</h2>
+</div>
+<div id="i-really-enjoyed-writing-about-rhinos" class="section level2">
+<h2>I really enjoyed writing about rhinos</h2>
+</div>
+<div class="footnotes">
+<hr />
+<ol>
+<li id="fn1"><p>read more about the difference rhino species <a href="https://en.wikipedia.org/wiki/Rhinoceros">here</a><a href="#fnref1">↩</a></p></li>
+<li id="fn2"><p>read more about the difference between the northern and southern white rhinos <a href="https://www.asiliaafrica.com/whats-the-difference-between-northern-and-southern-white-rhino/">here</a><a href="#fnref2">↩</a></p></li>
+</ol>
+</div>
