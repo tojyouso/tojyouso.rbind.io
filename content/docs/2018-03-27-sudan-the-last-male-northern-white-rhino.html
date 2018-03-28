@@ -8,12 +8,14 @@ tags:
   - R
   - ggplot
   - rhino
-  - data viz
+  - Data Viz
+  - patchwork
+  - rvest
 ---
 
 
 
-<p>I recently read a story on the <a href="">guardian</a> about the last male northern white rhino who died last week effectively rendering the species extinct. I had never heard of a northern white rhino so googled to see what it looked like and what kind of rhinos exist. So it turns out there are five main types of rhinos: <em>white</em> , <em>black</em>, <em>Indian</em>, <em>Javan</em> and <em>Sumatran</em>.<a href="#fn1" class="footnoteRef" id="fnref1"><sup>1</sup></a></p>
+<p>I recently read a story on the <a href="https://www.theguardian.com/environment/2018/mar/20/last-male-white-rhino-is-put-down">guardian</a> about the last male northern white rhino who died last week effectively rendering the species extinct. I had never heard of a northern white rhino so googled to see what it looked like and what kind of rhinos exist. So it turns out there are five main types of rhinos: <em>white</em> , <em>black</em>, <em>Indian</em>, <em>Javan</em> and <em>Sumatran</em>.<a href="#fn1" class="footnoteRef" id="fnref1"><sup>1</sup></a></p>
 <p>Here’s a picture of each one.</p>
 <p>They are awesome animals aren’t they.</p>
 <p>I was interested in this for a couple of reasosn:</p>
@@ -28,39 +30,184 @@ tags:
 <h2>White rhinos</h2>
 <p>First of all, <em>white</em> has nothing to do with their colour as you can see above, they are actually grey like most rhinos. They are called <em>white</em> because early English South African speakers settling in Africa mistook the German word <em>wijd</em> meaning wide (as in wide mouthed rhino) for <em>white</em>. The wide mouth is the main difference between the white rhinos and the black rhinos.</p>
 <p>White rhinos can be further subdivided into two subspecies: northern and southern. The northern is smaller, less hairy and has a smaller horn.<a href="#fn2" class="footnoteRef" id="fnref2"><sup>2</sup></a></p>
-<p>To really understand how large these animals (northern white rhinos) are I created a couple of small charts comparing them to me.</p>
-<pre class="r"><code>library(tidyverse)</code></pre>
-<pre><code>## ── Attaching packages ────────────────────────────────── tidyverse 1.2.1 ──</code></pre>
-<pre><code>## ✔ ggplot2 2.2.1.9000     ✔ purrr   0.2.4     
-## ✔ tibble  1.4.2          ✔ dplyr   0.7.4     
-## ✔ tidyr   0.8.0          ✔ stringr 1.2.0     
-## ✔ readr   1.1.1          ✔ forcats 0.2.0</code></pre>
-<pre><code>## ── Conflicts ───────────────────────────────────── tidyverse_conflicts() ──
-## ✖ dplyr::filter() masks stats::filter()
-## ✖ dplyr::lag()    masks stats::lag()
-## ✖ dplyr::vars()   masks ggplot2::vars()</code></pre>
-<pre class="r"><code>rhino_man &lt;- data_frame(animal = c(&quot;man&quot;, &quot;rhino&quot;),
+<p>With the new and excellent <code>patchwork</code><a href="#fn3" class="footnoteRef" id="fnref3"><sup>3</sup></a> package by <a href="https://twitter.com/thomasp85?lang=en">Thomas Lin Pedersen</a>, I can create a bunch of <code>ggplot2</code> charts together in one plot describing how I compare to a typical rhino. This functionality is not new but how easy to use and intuitive it is - that’s why I love it already. It’s as simple as adding to <code>ggplots</code> together!</p>
+<pre class="r"><code># create rhino weight height data
+rhino_man &lt;- data_frame(animal = c(&quot;toju&quot;, &quot;rhino&quot;),
                         weight = c(100, 2000),
-                        )
+                        height = c(177, 190),
+                        length = c(20, 400),
+                        horns = c(0, 2))
 
-rhino_man %&gt;% 
-  ggplot(aes(x = animal, y = weight)) +
-  geom_col()</code></pre>
-<p><img src="/docs/2018-03-27-sudan-the-last-male-northern-white-rhino_files/figure-html/unnamed-chunk-1-1.png" width="672" /></p>
+ggplot(data = rhino_man, aes(x = animal, y = weight)) +
+  geom_col(fill = &quot;grey&quot;) +
+  labs(x = NULL, y = &quot;weight (kg)&quot;,
+       title = &quot;Rhinos are much heavier\nthan me&quot;) +
+  theme(panel.grid = element_blank()) +
+  # add new plot
+  scale_y_continuous(breaks = 2000, labels = c(2000)) +
+  ggplot(data = rhino_man, aes(x = animal, y = height)) +
+  geom_col(fill = &quot;grey&quot;) +
+  labs(x = NULL, y = &quot;height (cm)&quot;,
+       title = &quot;I&#39;m almost the same height\nas a rhino&quot;) +
+  theme(panel.grid = element_blank()) +
+  scale_y_continuous(breaks = 190, labels = c(190)) +
+  # add new plot
+  ggplot(data = rhino_man, aes(x = animal, y = length)) +
+  geom_col(fill = &quot;grey&quot;) +
+  labs(x = NULL, y = &quot;length (cm)&quot;,
+       title = &quot;Rhinos are much longer\nthan me&quot;) +
+  theme(panel.grid = element_blank()) +
+  scale_y_continuous(breaks = 400, labels = c(400)) +
+  # add new plot
+  ggplot(data = rhino_man, aes(x = animal, y = horns)) +
+  geom_col(fill = &quot;grey&quot;) +
+  labs(x = NULL, y = &quot;# of horns&quot;,
+       title = &quot;Rhinos have a couple more\n horns than I do&quot;) +
+  theme(panel.grid = element_blank()) +
+  scale_y_continuous(breaks = 2, labels = c(2)) +
+  plot_layout(ncol = 2)</code></pre>
+<p><img src="/docs/2018-03-27-sudan-the-last-male-northern-white-rhino_files/figure-html/rhino_man-1.png" width="672" /></p>
 </div>
-<div id="sudan" class="section level2">
-<h2>Sudan</h2>
+<div id="sudan-and-the-plight-of-the-northern-white-rhino" class="section level2">
+<h2>Sudan and the plight of the northern white rhino</h2>
+<p>As mentioned earlier, Sudan (the last male northern white rhino) died last week on the 19th of March 2018. Effectively making the subspecies extinct. He leaves two female rhinos - Najin, his daughter and Fatu his granddaughter who currently reside in Ol Pejeta Conservancy in Kenya. The population of rhinos has been drastically reduced due to heavy poacher activity while a few have been caught and kept in zoos and national parks.</p>
+<p>To plot the data I first needed to scrape the wikipedia site (using <code>rvest</code>). The code below will extract all html tables on the wikipedia page into a list. The population table I want is the second table so I just need to extract that</p>
+<pre class="r"><code>url &lt;- &quot;https://en.wikipedia.org/wiki/Northern_white_rhinoceros&quot;
+rhinos &lt;- url %&gt;%
+  read_html() %&gt;% 
+  html_table()
+
+rhinos &lt;- rhinos[[2]]
+
+head(rhinos)</code></pre>
+<pre><code>##                   Location     1909[56]      1960*    1975*     1984
+## 1                     Wild 2,000–3,000* 2,000*[18] 500*[27]   15[40]
+## 2 Central African Republic          n/a        n/a      n/a        0
+## 3   Dem. Republic of Congo          n/a        n/a      n/a       15
+## 4              South Sudan          n/a        n/a      n/a        0
+## 5                   Uganda          n/a        n/a      n/a        0
+## 6                Captivity          n/a       7[5]    15[5] 16[4][5]
+##       1995     1996      1998      2000     2003         2006         2007
+## 1   35[40]   29[28] 26-31[28] 30-36[28]   30[34]        4[34]          n/a
+## 2        0        0         0         0        0            0            0
+## 3       35       29     26-31     30-36       30            4          n/a
+## 4        0        0         0         0        0            0            0
+## 5        0        0         0         0        0            0            0
+## 6 11[4][5] 10[4][5]  10[4][5]  11[4][5] 11[4][5] 10[4][5][42] 8[5][44][50]
+##        2008  2009  2011 2014  2015  2017  2018
+## 1 0[34][40]     0     0    0     0     0     0
+## 2         0     0     0    0     0     0     0
+## 3         0     0     0    0     0     0     0
+## 4         0     0     0    0     0     0     0
+## 5         0     0     0    0     0     0     0
+## 6     8[57] 8[57] 7[58] 5[1] 3[54] 3[59] 2[60]</code></pre>
+<p>When I scraped the data from wikipedia, I got all sorts in the numerical columns. Some numbers have commas, some numbers are ranges and all the footnote references. Well that’s just annoying. Luckily, I have recently learnt how to use <a href="">regex</a>. This along with some <code>dplyr</code> made cleaning this up slightly less annoying. The main trick here was to convert the data to long format rather than wide which enabled me to apply all my data cleaning to one column rather than several. It also puts it in a great shapre for <code>ggplot</code>.</p>
+<pre class="r"><code>rhinos &lt;- rhinos %&gt;% 
+  filter(Location %in% c(&quot;Wild&quot;, &quot;Captivity&quot;)) %&gt;% 
+  # reshape data to long format
+  gather(key, value, - Location) %&gt;% 
+  set_names(c(&quot;location&quot;, &quot;year&quot;, &quot;value&quot;)) %&gt;% 
+  mutate(year = as.numeric(str_sub(year, 1, 4)),
+         value = str_replace_all(value, &quot;,&quot;, &quot;&quot;)) %&gt;% 
+  # remove the earlier data because we don&#39;t have figures for captivity
+  filter(year &gt; 1909) %&gt;% 
+  # \\ can be used to escape special characters in regex
+  mutate(value = str_replace_all(value, &quot;\\*.*&quot;, &quot;&quot;),
+         value = str_replace_all(value, &quot;\\[.*&quot;, &quot;&quot;),
+         value = str_replace_all(value, &quot;-.*&quot;, &quot;&quot;),
+         value = as.numeric(value)) %&gt;% 
+  # replace nas with the lag of the last variable but need to group first
+  group_by(location) %&gt;% 
+  arrange(location, year) %&gt;% 
+  # some years are missing so interpolate
+  mutate(value = if_else(is.na(value), (lag(value) + lead(value)) / 2, value))
+
+head(rhinos)</code></pre>
+<pre><code>## # A tibble: 6 x 3
+## # Groups:   location [1]
+##   location   year value
+##   &lt;chr&gt;     &lt;dbl&gt; &lt;dbl&gt;
+## 1 Captivity 1960.    7.
+## 2 Captivity 1975.   15.
+## 3 Captivity 1984.   16.
+## 4 Captivity 1995.   11.
+## 5 Captivity 1996.   10.
+## 6 Captivity 1998.   10.</code></pre>
+<p>Recently, I’ve been challenging myself to make plots without axes. I noticed that when I would draft a plot on paper I would always start by drawing the x and y axes. This is probably a result of being a mathematician but I think it activily frames my thinking and sometimes it can result in a boring chart. Since then, I’ve been learning more about annotations and labelling of single points to bring out the exact story I want to share with my audience.</p>
+<pre class="r"><code>rhinos %&gt;% 
+  filter(location == &quot;Wild&quot;) %&gt;%
+  ggplot(aes(x = year, y = value)) +
+  geom_line(colour = &quot;grey&quot;, size = 3) + # because rhinos are grey
+  # geom_point(colour = &quot;black&quot;, size = 3) + 
+  theme(panel.grid = element_blank(),
+        axis.text = element_blank()) +
+  labs(x = NULL, y = NULL,
+       title = NULL,
+       caption = str_c(&quot;source: https://en.wikipedia.org/wiki/Northern_white_rhinoceros&quot;,
+                       &quot;\n&quot;, 
+                       &quot;@tojyouso&quot;)) +
+  annotate(&quot;text&quot;, label = &quot;2,000 northern white rhinos in the wild in 1960&quot;,
+           x = 1977, y = 2000, colour = &quot;red&quot;, fontface = 4) +
+  annotate(&quot;text&quot;, label = &quot;NO northern white rhinos\nin the wild since 2008&quot;,
+           x = 2010, y = 150, colour = &quot;red&quot;, fontface = 4) </code></pre>
+<p><img src="/docs/2018-03-27-sudan-the-last-male-northern-white-rhino_files/figure-html/unnamed-chunk-3-1.png" width="672" /></p>
+<p>I think the minimlastic effect here is worth some loss of information. The important thing to show is that there were 2000 northern white rhinos in the wild in 1960 and now there are <strong>none</strong>.</p>
+<div id="the-lives-of-rhinos-in-captivity" class="section level3">
+<h3>The lives of rhinos in captivity</h3>
+<p>In the wikipedia article, there was some more data that I thought was interesting. They had a few bullet points about the rhinos kept in captivity. The data was all in text so I had to manually extract the data points. With it I was able to produce this interesting chart of Sudan and his family and friends held in captivity.</p>
+<pre class="r"><code>rhino_deets %&gt;%
+  ggplot(aes(x = birth, y = names)) +
+  geom_segment(aes(xend = death, yend = names), size = 2, colour = &quot;grey&quot;) +
+  theme(panel.grid = element_blank(),
+        axis.text = element_blank(),
+        plot.caption = element_text(),
+        plot.title = element_text(face = &quot;bold.italic&quot;)) +
+  labs(x = NULL, y = NULL,
+       title = NULL,
+       caption = str_c(&quot;source: https://en.wikipedia.org/wiki/Northern_white_rhinoceros&quot;,
+                       &quot;\n&quot;, 
+                       &quot;@tojyouso&quot;)) +
+  geom_point(data = filter(rhino_deets, !names %in% c(&quot;Najin&quot;, &quot;Fatu&quot;) ),
+             aes(x = death), size = 3, colour = &quot;red&quot;) +
+  geom_label(aes(x = death + 5,
+                 y = names,
+                 label = str_c(names, &quot; (&quot;, age, &quot;)&quot;)),
+             label.size  = 0, size = 3) +
+  geom_label(data = rhino_deets %&gt;% filter(names %in% c(&quot;Ben&quot;, &quot;Fatu&quot;)),
+             aes(x = birth - 3,
+                 y = names,
+                 label = birth),
+             label.size  = 0, size = 3) +
+  annotate(&quot;text&quot;,
+           label = str_c(&quot;Lives of Northern White Rhinos in&quot;,
+                         &quot;\n&quot;,
+                         &quot;in Dvur Kralove Zoo and&quot;,
+                         &quot;\n&quot;,
+                         &quot;San Diego Zoo Safari Park&quot;),
+           x = 1960,
+           y = 3,
+           size = 3.5, fontface = 4)</code></pre>
+<p><img src="/docs/2018-03-27-sudan-the-last-male-northern-white-rhino_files/figure-html/unnamed-chunk-5-1.png" width="672" /></p>
+<p>I really like this plot. Again, there are no axes just some careful labelling to bring out the important information: how the ages of the rhinos are distributed and when they’ve been born. It was nice to explore going without a title and using an annotation in the plot instead. I tried other themes, like with a black background but it didn’t look as good. You can find the code for that on <a href="">github</a>.</p>
+<p>There are other things I wanted to add to the plot such as some colour to indicate whether they are male or female or which zoo/safari park they resided at but I’m still learning about how to customise <code>ggplot2</code> legends so that will be for another time.</p>
+<p>Anyway, as you can see there are only two northern white rhinos left and given the average age is 31 we might lose Najin soon.</p>
+</div>
 </div>
 <div id="hope" class="section level2">
 <h2>Hope</h2>
+<p>But there’s hope! Since I started writing this post, another article by the <a href="https://www.theguardian.com/world/2018/mar/23/scientists-store-of-rhino-semen-could-save-rare-species">guardian</a> has come out - apparently they have been collecting rhino sperm for quite a few years and may be able to use it for IVF with other rhino subspecies. Neither Fatu nor Najin are able to carry offspring. If you want to donate to the cause, you can click <a href="http://www.leibniz-izw.de/pr/the-northern-white-rhino-advanced-reproductive-technologies-provide-a-realistic-chance-for-saving-the-critically-endangered-spec.html">here</a> for more info.</p>
+<iframe width="560" height="315" src="https://www.youtube.com/embed/g6KHMFSjlw4" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen>
+</iframe>
 </div>
 <div id="i-really-enjoyed-writing-about-rhinos" class="section level2">
 <h2>I really enjoyed writing about rhinos</h2>
+<p>I really enjoyed writing this piece. I learnt a lot about rhinos and I learnt a lot more about <code>R</code>. Sometimes it can be hard to find topics/datasets for research or to write about because I’m looking for huge datasets to run machine learning algorithms on. Sometimes exploring the small data in unexpected data can be even more rewarding.</p>
 </div>
 <div class="footnotes">
 <hr />
 <ol>
 <li id="fn1"><p>read more about the difference rhino species <a href="https://en.wikipedia.org/wiki/Rhinoceros">here</a><a href="#fnref1">↩</a></p></li>
 <li id="fn2"><p>read more about the difference between the northern and southern white rhinos <a href="https://www.asiliaafrica.com/whats-the-difference-between-northern-and-southern-white-rhino/">here</a><a href="#fnref2">↩</a></p></li>
+<li id="fn3"><p>more info on the <code>patchwork</code> package <a href="https://github.com/thomasp85/patchwork">here</a><a href="#fnref3">↩</a></p></li>
 </ol>
 </div>
