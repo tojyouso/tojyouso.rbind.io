@@ -1,9 +1,12 @@
 ---
 title: Sudan, the last male northern white rhino
 author: ''
-date: '2018-03-27'
+date: '2018-03-26'
 slug: sudan-the-last-male-northern-white-rhino
 categories: []
+output:
+  blogdown::html_page:
+    toc: true
 tags:
   - R
   - ggplot
