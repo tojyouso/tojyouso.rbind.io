@@ -1,12 +1,12 @@
 ---
 title: Sudan, the last male northern white rhino
 author: ''
-date: '2018-03-26'
+date: '2018-03-27'
 slug: sudan-the-last-male-northern-white-rhino
 categories: []
 output:
   blogdown::html_page:
-    toc: true
+    toc: false
 tags:
   - R
   - ggplot
@@ -17,19 +17,18 @@ tags:
 ---
 
 
-<div id="TOC">
-<ul>
-<li><a href="#white-rhinos">White rhinos</a></li>
-<li><a href="#sudan-and-the-plight-of-the-northern-white-rhino">Sudan and the plight of the northern white rhino</a><ul>
-<li><a href="#the-lives-of-rhinos-in-captivity">The lives of rhinos in captivity</a></li>
-</ul></li>
-<li><a href="#hope">Hope</a></li>
-<li><a href="#i-really-enjoyed-writing-about-rhinos">I really enjoyed writing about rhinos</a></li>
-</ul>
-</div>
 
 <p>I recently read a story on the <a href="https://www.theguardian.com/environment/2018/mar/20/last-male-white-rhino-is-put-down">guardian</a> about the last male northern white rhino who died last week effectively rendering the species extinct. I had never heard of a northern white rhino so googled to see what it looked like and what kind of rhinos exist. So it turns out there are five main types of rhinos: <em>white</em> , <em>black</em>, <em>Indian</em>, <em>Javan</em> and <em>Sumatran</em>.<a href="#fn1" class="footnoteRef" id="fnref1"><sup>1</sup></a></p>
-<p>Here’s a picture of each one.</p>
+<p>Here’s a picture of two:</p>
+<div class="figure">
+<img src="/images/rhino/rhino.jpg" />
+
+</div>
+<p>And another one up close:</p>
+<div class="figure">
+<img src="/images/rhino/rhino2.jpg" />
+
+</div>
 <p>They are awesome animals aren’t they.</p>
 <p>I was interested in this for a couple of reasosn:</p>
 <ol style="list-style-type: decimal">
@@ -75,7 +74,7 @@ ggplot(data = rhino_man, aes(x = animal, y = weight)) +
   ggplot(data = rhino_man, aes(x = animal, y = horns)) +
   geom_col(fill = &quot;grey&quot;) +
   labs(x = NULL, y = &quot;# of horns&quot;,
-       title = &quot;Rhinos have a couple more\n horns than I do&quot;) +
+       title = &quot;Rhinos have a couple more\nhorns than I do&quot;) +
   theme(panel.grid = element_blank()) +
   scale_y_continuous(breaks = 2, labels = c(2)) +
   plot_layout(ncol = 2)</code></pre>
@@ -92,29 +91,15 @@ rhinos &lt;- url %&gt;%
 
 rhinos &lt;- rhinos[[2]]
 
-head(rhinos)</code></pre>
+head(rhinos[, 1:5])</code></pre>
 <pre><code>##                   Location     1909[56]      1960*    1975*     1984
 ## 1                     Wild 2,000–3,000* 2,000*[18] 500*[27]   15[40]
 ## 2 Central African Republic          n/a        n/a      n/a        0
 ## 3   Dem. Republic of Congo          n/a        n/a      n/a       15
 ## 4              South Sudan          n/a        n/a      n/a        0
 ## 5                   Uganda          n/a        n/a      n/a        0
-## 6                Captivity          n/a       7[5]    15[5] 16[4][5]
-##       1995     1996      1998      2000     2003         2006         2007
-## 1   35[40]   29[28] 26-31[28] 30-36[28]   30[34]        4[34]          n/a
-## 2        0        0         0         0        0            0            0
-## 3       35       29     26-31     30-36       30            4          n/a
-## 4        0        0         0         0        0            0            0
-## 5        0        0         0         0        0            0            0
-## 6 11[4][5] 10[4][5]  10[4][5]  11[4][5] 11[4][5] 10[4][5][42] 8[5][44][50]
-##        2008  2009  2011 2014  2015  2017  2018
-## 1 0[34][40]     0     0    0     0     0     0
-## 2         0     0     0    0     0     0     0
-## 3         0     0     0    0     0     0     0
-## 4         0     0     0    0     0     0     0
-## 5         0     0     0    0     0     0     0
-## 6     8[57] 8[57] 7[58] 5[1] 3[54] 3[59] 2[60]</code></pre>
-<p>When I scraped the data from wikipedia, I got all sorts in the numerical columns. Some numbers have commas, some numbers are ranges and all the footnote references. Well that’s just annoying. Luckily, I have recently learnt how to use <a href="">regex</a>. This along with some <code>dplyr</code> made cleaning this up slightly less annoying. The main trick here was to convert the data to long format rather than wide which enabled me to apply all my data cleaning to one column rather than several. It also puts it in a great shapre for <code>ggplot</code>.</p>
+## 6                Captivity          n/a       7[5]    15[5] 16[4][5]</code></pre>
+<p>When I scraped the data from wikipedia, I got all sorts in the numerical columns. Some numbers have commas, some numbers are ranges and all the footnote references. Well that’s just annoying. Luckily, I have recently learnt how to use <a href="https://tojyouso.rbind.io/docs/reeeeeeeeeeeegex/">regex</a>. This along with some <code>dplyr</code> made cleaning this up slightly less annoying. The main trick here was to convert the data to long format rather than wide which enabled me to apply all my data cleaning to one column rather than several. It also puts it in a great shapre for <code>ggplot</code>.</p>
 <pre class="r"><code>rhinos &lt;- rhinos %&gt;% 
   filter(Location %in% c(&quot;Wild&quot;, &quot;Captivity&quot;)) %&gt;% 
   # reshape data to long format
@@ -201,7 +186,7 @@ head(rhinos)</code></pre>
            y = 3,
            size = 3.5, fontface = 4)</code></pre>
 <p><img src="/docs/2018-03-27-sudan-the-last-male-northern-white-rhino_files/figure-html/unnamed-chunk-5-1.png" width="672" /></p>
-<p>I really like this plot. Again, there are no axes just some careful labelling to bring out the important information: how the ages of the rhinos are distributed and when they’ve been born. It was nice to explore going without a title and using an annotation in the plot instead. I tried other themes, like with a black background but it didn’t look as good. You can find the code for that on <a href="">github</a>.</p>
+<p>I really like this plot. Again, there are no axes just some careful labelling to bring out the important information: how the ages of the rhinos are distributed and when they’ve been born. It was nice to explore going without a title and using an annotation in the plot instead. I tried other themes, like with a black background but it didn’t look as good. You can find the code for that on <a href="https://github.com/tojyouso/tojyouso.rbind.io/blob/master/content/docs/2018-03-27-sudan-the-last-male-northern-white-rhino.Rmd">github</a>.</p>
 <p>There are other things I wanted to add to the plot such as some colour to indicate whether they are male or female or which zoo/safari park they resided at but I’m still learning about how to customise <code>ggplot2</code> legends so that will be for another time.</p>
 <p>Anyway, as you can see there are only two northern white rhinos left and given the average age is 31 we might lose Najin soon.</p>
 </div>
@@ -211,6 +196,7 @@ head(rhinos)</code></pre>
 <p>But there’s hope! Since I started writing this post, another article by the <a href="https://www.theguardian.com/world/2018/mar/23/scientists-store-of-rhino-semen-could-save-rare-species">guardian</a> has come out - apparently they have been collecting rhino sperm for quite a few years and may be able to use it for IVF with other rhino subspecies. Neither Fatu nor Najin are able to carry offspring. If you want to donate to the cause, you can click <a href="http://www.leibniz-izw.de/pr/the-northern-white-rhino-advanced-reproductive-technologies-provide-a-realistic-chance-for-saving-the-critically-endangered-spec.html">here</a> for more info.</p>
 <iframe width="560" height="315" src="https://www.youtube.com/embed/g6KHMFSjlw4" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen>
 </iframe>
+<p><br></p>
 </div>
 <div id="i-really-enjoyed-writing-about-rhinos" class="section level2">
 <h2>I really enjoyed writing about rhinos</h2>

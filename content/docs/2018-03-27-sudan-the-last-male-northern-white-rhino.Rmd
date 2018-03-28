@@ -1,12 +1,12 @@
 ---
 title: Sudan, the last male northern white rhino
 author: ''
-date: '2018-03-26'
+date: '2018-03-27'
 slug: sudan-the-last-male-northern-white-rhino
 categories: []
 output:
   blogdown::html_page:
-    toc: true
+    toc: false
 tags:
   - R
   - ggplot
@@ -26,7 +26,14 @@ theme_set(theme_minimal())
 
 I recently read a story on the [guardian](https://www.theguardian.com/environment/2018/mar/20/last-male-white-rhino-is-put-down) about the last male northern white rhino who died last week effectively rendering the species extinct. I had never heard of a northern white rhino so googled to see what it looked like and what kind of rhinos exist. So it turns out there are five main types of rhinos: _white_ , _black_, _Indian_, _Javan_ and _Sumatran_.[^rhino_types]
 
-Here's a picture of each one.
+Here's a picture of two:
+
+![](/images/rhino/rhino.jpg)
+
+
+And another one up close:
+
+![](/images/rhino/rhino2.jpg)
 
 They are awesome animals aren't they. 
 
@@ -79,7 +86,7 @@ ggplot(data = rhino_man, aes(x = animal, y = weight)) +
   ggplot(data = rhino_man, aes(x = animal, y = horns)) +
   geom_col(fill = "grey") +
   labs(x = NULL, y = "# of horns",
-       title = "Rhinos have a couple more\n horns than I do") +
+       title = "Rhinos have a couple more\nhorns than I do") +
   theme(panel.grid = element_blank()) +
   scale_y_continuous(breaks = 2, labels = c(2)) +
   plot_layout(ncol = 2)
@@ -100,10 +107,10 @@ rhinos <- url %>%
 
 rhinos <- rhinos[[2]]
 
-head(rhinos)
+head(rhinos[, 1:5])
 ```
 
-When I scraped the data from wikipedia, I got all sorts in the numerical columns. Some numbers have commas, some numbers are ranges and all the footnote references. Well that's just annoying. Luckily, I have recently learnt how to use [regex](). This along with some `dplyr` made cleaning this up slightly less annoying. The main trick here was to convert the data to long format rather than wide which enabled me to apply all my data cleaning to one column rather than several. It also puts it in a great shapre for `ggplot`.
+When I scraped the data from wikipedia, I got all sorts in the numerical columns. Some numbers have commas, some numbers are ranges and all the footnote references. Well that's just annoying. Luckily, I have recently learnt how to use [regex](https://tojyouso.rbind.io/docs/reeeeeeeeeeeegex/). This along with some `dplyr` made cleaning this up slightly less annoying. The main trick here was to convert the data to long format rather than wide which enabled me to apply all my data cleaning to one column rather than several. It also puts it in a great shapre for `ggplot`.
 
 ```{r, message=FALSE, warning=FALSE}
 rhinos <- rhinos %>% 
@@ -209,7 +216,7 @@ rhino_deets %>%
            size = 3.5, fontface = 4)
 ```
 
-I really like this plot. Again, there are no axes just some careful labelling to bring out the important information: how the ages of the rhinos are distributed and when they've been born. It was nice to explore going without a title and using an annotation in the plot instead. I tried other themes, like with a black background but it didn't look as good. You can find the code for that on [github]().
+I really like this plot. Again, there are no axes just some careful labelling to bring out the important information: how the ages of the rhinos are distributed and when they've been born. It was nice to explore going without a title and using an annotation in the plot instead. I tried other themes, like with a black background but it didn't look as good. You can find the code for that on [github](https://github.com/tojyouso/tojyouso.rbind.io/blob/master/content/docs/2018-03-27-sudan-the-last-male-northern-white-rhino.Rmd).
 
 There are other things I wanted to add to the plot such as some colour to indicate whether they are male or female or which zoo/safari park they resided at but I'm still learning about how to customise `ggplot2` legends so that will be for another time. 
 
@@ -253,6 +260,8 @@ rhino_deets %>%
 But there's hope! Since I started writing this post, another article by the [guardian](https://www.theguardian.com/world/2018/mar/23/scientists-store-of-rhino-semen-could-save-rare-species) has come out - apparently they have been collecting rhino sperm for quite a few years and may be able to use it for IVF with other rhino subspecies. Neither Fatu nor Najin are able to carry offspring. If you want to donate to the cause, you can click [here](http://www.leibniz-izw.de/pr/the-northern-white-rhino-advanced-reproductive-technologies-provide-a-realistic-chance-for-saving-the-critically-endangered-spec.html) for more info.
 
 <iframe width="560" height="315" src="https://www.youtube.com/embed/g6KHMFSjlw4" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
+
+<br>
 
 ## I really enjoyed writing about rhinos
 
