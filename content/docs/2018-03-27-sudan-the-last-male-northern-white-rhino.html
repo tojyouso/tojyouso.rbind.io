@@ -29,12 +29,12 @@ tags:
 <img src="/images/rhino/rhino2.jpg" />
 
 </div>
-<p>They are awesome animals aren’t they.</p>
-<p>I was interested in this for a couple of reasosn:</p>
+<p>They are awesome animals aren’t they?</p>
+<p>I was interested in this for a couple of reasons:</p>
 <ol style="list-style-type: decimal">
 <li>It’s a sad story that I wanted to further highlight</li>
 <li>It’s one of my dreams to go on safari</li>
-<li>I think rhinos are incredible animlas - their size, the thick grey hide and those majestic horns</li>
+<li>I think rhinos are incredible animals - their size, the thick grey hide and those majestic horns</li>
 <li>I want to highlight great things about Africa</li>
 <li>I thought writing this would give me a chance to practise some <code>R</code> skills</li>
 </ol>
@@ -83,7 +83,7 @@ ggplot(data = rhino_man, aes(x = animal, y = weight)) +
 <div id="sudan-and-the-plight-of-the-northern-white-rhino" class="section level2">
 <h2>Sudan and the plight of the northern white rhino</h2>
 <p>As mentioned earlier, Sudan (the last male northern white rhino) died last week on the 19th of March 2018. Effectively making the subspecies extinct. He leaves two female rhinos - Najin, his daughter and Fatu his granddaughter who currently reside in Ol Pejeta Conservancy in Kenya. The population of rhinos has been drastically reduced due to heavy poacher activity while a few have been caught and kept in zoos and national parks.</p>
-<p>To plot the data I first needed to scrape the wikipedia site (using <code>rvest</code>). The code below will extract all html tables on the wikipedia page into a list. The population table I want is the second table so I just need to extract that</p>
+<p>To plot the data I first needed to scrape the Wikipedia site (using <code>rvest</code>). The code below will extract all html tables on the Wikipedia page into a list. The population table I want is the second table so I just need to extract that</p>
 <pre class="r"><code>url &lt;- &quot;https://en.wikipedia.org/wiki/Northern_white_rhinoceros&quot;
 rhinos &lt;- url %&gt;%
   read_html() %&gt;% 
@@ -99,7 +99,7 @@ head(rhinos[, 1:5])</code></pre>
 ## 4              South Sudan          n/a        n/a      n/a        0
 ## 5                   Uganda          n/a        n/a      n/a        0
 ## 6                Captivity          n/a       7[5]    15[5] 16[4][5]</code></pre>
-<p>When I scraped the data from wikipedia, I got all sorts in the numerical columns. Some numbers have commas, some numbers are ranges and all the footnote references. Well that’s just annoying. Luckily, I have recently learnt how to use <a href="https://tojyouso.rbind.io/docs/reeeeeeeeeeeegex/">regex</a>. This along with some <code>dplyr</code> made cleaning this up slightly less annoying. The main trick here was to convert the data to long format rather than wide which enabled me to apply all my data cleaning to one column rather than several. It also puts it in a great shapre for <code>ggplot</code>.</p>
+<p>When I scraped the data from Wikipedia, I got all sorts in the numerical columns. Some numbers have commas, some numbers are ranges and all the footnote references. Well that’s just annoying. Luckily, I have recently learnt how to use <a href="https://tojyouso.rbind.io/docs/reeeeeeeeeeeegex/">regex</a>. This along with some <code>dplyr</code> made cleaning this up slightly less annoying. The main trick here was to convert the data to long format rather than wide which enabled me to apply all my data cleaning to one column rather than several. It also puts it in a great shape for <code>ggplot</code>.</p>
 <pre class="r"><code>rhinos &lt;- rhinos %&gt;% 
   filter(Location %in% c(&quot;Wild&quot;, &quot;Captivity&quot;)) %&gt;% 
   # reshape data to long format
@@ -131,7 +131,7 @@ head(rhinos)</code></pre>
 ## 4 Captivity 1995.   11.
 ## 5 Captivity 1996.   10.
 ## 6 Captivity 1998.   10.</code></pre>
-<p>Recently, I’ve been challenging myself to make plots without axes. I noticed that when I would draft a plot on paper I would always start by drawing the x and y axes. This is probably a result of being a mathematician but I think it activily frames my thinking and sometimes it can result in a boring chart. Since then, I’ve been learning more about annotations and labelling of single points to bring out the exact story I want to share with my audience.</p>
+<p>Recently, I’ve been challenging myself to make plots without axes. I noticed that when I would draft a plot on paper I would always start by drawing the x and y axes. This is probably a result of being a mathematician but I think it actively frames my thinking and sometimes it can result in a boring chart. Since then, I’ve been learning more about annotations and labelling of single points to bring out the exact story I want to share with my audience.</p>
 <pre class="r"><code>rhinos %&gt;% 
   filter(location == &quot;Wild&quot;) %&gt;%
   ggplot(aes(x = year, y = value)) +
@@ -149,10 +149,10 @@ head(rhinos)</code></pre>
   annotate(&quot;text&quot;, label = &quot;NO northern white rhinos\nin the wild since 2008&quot;,
            x = 2010, y = 150, colour = &quot;red&quot;, fontface = 4) </code></pre>
 <p><img src="/docs/2018-03-27-sudan-the-last-male-northern-white-rhino_files/figure-html/unnamed-chunk-3-1.png" width="672" /></p>
-<p>I think the minimlastic effect here is worth some loss of information. The important thing to show is that there were 2000 northern white rhinos in the wild in 1960 and now there are <strong>none</strong>.</p>
+<p>I think the minimalistic effect here is worth some loss of information. The important thing to show is that there were 2000 northern white rhinos in the wild in 1960 and now there are <strong>none</strong>.</p>
 <div id="the-lives-of-rhinos-in-captivity" class="section level3">
 <h3>The lives of rhinos in captivity</h3>
-<p>In the wikipedia article, there was some more data that I thought was interesting. They had a few bullet points about the rhinos kept in captivity. The data was all in text so I had to manually extract the data points. With it I was able to produce this interesting chart of Sudan and his family and friends held in captivity.</p>
+<p>In the Wikipedia article, there was some more data that I thought was interesting. They had a few bullet points about the rhinos kept in captivity. The data was all in text so I had to manually extract the data points. With it I was able to produce this interesting chart of Sudan and his family and friends held in captivity.</p>
 <pre class="r"><code>rhino_deets %&gt;%
   ggplot(aes(x = birth, y = names)) +
   geom_segment(aes(xend = death, yend = names), size = 2, colour = &quot;grey&quot;) +

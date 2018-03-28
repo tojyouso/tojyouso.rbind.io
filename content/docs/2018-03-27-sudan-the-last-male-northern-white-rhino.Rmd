@@ -35,13 +35,13 @@ And another one up close:
 
 ![](/images/rhino/rhino2.jpg)
 
-They are awesome animals aren't they. 
+They are awesome animals aren't they? 
 
-I was interested in this for a couple of reasosn:
+I was interested in this for a couple of reasons:
 
 1. It's a sad story that I wanted to further highlight
 2. It's one of my dreams to go on safari
-3. I think rhinos are incredible animlas - their size, the thick grey hide and those majestic horns
+3. I think rhinos are incredible animals - their size, the thick grey hide and those majestic horns
 4. I want to highlight great things about Africa
 5. I thought writing this would give me a chance to practise some `R` skills
 
@@ -97,7 +97,7 @@ ggplot(data = rhino_man, aes(x = animal, y = weight)) +
 
 As mentioned earlier, Sudan (the last male northern white rhino) died last week on the 19th of March 2018. Effectively making the subspecies extinct. He leaves two female rhinos - Najin, his daughter and Fatu his granddaughter who currently reside in Ol Pejeta Conservancy in Kenya. The population of rhinos has been drastically reduced due to heavy poacher activity while a few have been caught and kept in zoos and national parks. 
 
-To plot the data I first needed to scrape the wikipedia site (using `rvest`). The code below will extract all html tables on the wikipedia page into a list. The population table I want is the second table so I just need to extract that
+To plot the data I first needed to scrape the Wikipedia site (using `rvest`). The code below will extract all html tables on the Wikipedia page into a list. The population table I want is the second table so I just need to extract that
 
 ```{r, message=FALSE, warning=FALSE}
 url <- "https://en.wikipedia.org/wiki/Northern_white_rhinoceros"
@@ -110,7 +110,7 @@ rhinos <- rhinos[[2]]
 head(rhinos[, 1:5])
 ```
 
-When I scraped the data from wikipedia, I got all sorts in the numerical columns. Some numbers have commas, some numbers are ranges and all the footnote references. Well that's just annoying. Luckily, I have recently learnt how to use [regex](https://tojyouso.rbind.io/docs/reeeeeeeeeeeegex/). This along with some `dplyr` made cleaning this up slightly less annoying. The main trick here was to convert the data to long format rather than wide which enabled me to apply all my data cleaning to one column rather than several. It also puts it in a great shapre for `ggplot`.
+When I scraped the data from Wikipedia, I got all sorts in the numerical columns. Some numbers have commas, some numbers are ranges and all the footnote references. Well that's just annoying. Luckily, I have recently learnt how to use [regex](https://tojyouso.rbind.io/docs/reeeeeeeeeeeegex/). This along with some `dplyr` made cleaning this up slightly less annoying. The main trick here was to convert the data to long format rather than wide which enabled me to apply all my data cleaning to one column rather than several. It also puts it in a great shape for `ggplot`.
 
 ```{r, message=FALSE, warning=FALSE}
 rhinos <- rhinos %>% 
@@ -136,7 +136,7 @@ rhinos <- rhinos %>%
 head(rhinos)
 ```
 
-Recently, I've been challenging myself to make plots without axes. I noticed that when I would draft a plot on paper I would always start by drawing the x and y axes. This is probably a result of being a mathematician but I think it activily frames my thinking and sometimes it can result in a boring chart. Since then, I've been learning more about annotations and labelling of single points to bring out the exact story I want to share with my audience. 
+Recently, I've been challenging myself to make plots without axes. I noticed that when I would draft a plot on paper I would always start by drawing the x and y axes. This is probably a result of being a mathematician but I think it actively frames my thinking and sometimes it can result in a boring chart. Since then, I've been learning more about annotations and labelling of single points to bring out the exact story I want to share with my audience. 
 
 ```{r, message=FALSE, warning=FALSE}
 rhinos %>% 
@@ -157,11 +157,11 @@ rhinos %>%
            x = 2010, y = 150, colour = "red", fontface = 4) 
 ```
 
-I think the minimlastic effect here is worth some loss of information. The important thing to show is that there were 2000 northern white rhinos in the wild in 1960 and now there are **none**.
+I think the minimalistic effect here is worth some loss of information. The important thing to show is that there were 2000 northern white rhinos in the wild in 1960 and now there are **none**.
 
 ### The lives of rhinos in captivity
 
-In the wikipedia article, there was some more data that I thought was interesting. They had a few bullet points about the rhinos kept in captivity. The data was all in text so I had to manually extract the data points. With it I was able to produce this interesting chart of Sudan and his family and friends held in captivity. 
+In the Wikipedia article, there was some more data that I thought was interesting. They had a few bullet points about the rhinos kept in captivity. The data was all in text so I had to manually extract the data points. With it I was able to produce this interesting chart of Sudan and his family and friends held in captivity. 
 
 ```{r, message=FALSE, warning=FALSE, include=FALSE}
 names <- c("Ben", "Nasima", "Saut", "Nuri", "Nesari", "Nasi",
