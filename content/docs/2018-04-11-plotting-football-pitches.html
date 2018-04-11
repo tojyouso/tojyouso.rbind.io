@@ -1,0 +1,208 @@
+---
+title: Plotting football pitches
+author: ''
+date: '2018-04-11'
+slug: plotting-football-pitches
+categories: []
+tags:
+  - Data Viz
+  - ggplot
+  - R
+  - football
+  - magick
+  - ggforce
+---
+
+
+
+<p>I’ve recently been playing with some football data from Stratagem<a href="#fn1" class="footnoteRef" id="fnref1"><sup>1</sup></a> with locations of shots taken. And of course, the first thing I wanted to do was to plot it. This is different to my normal plots because I needed to give the plots context. So I learnt how to draw football pitches with <code>ggplot2</code>. On the way, I learnt about <code>ggforce</code>, a little about functional programming <code>ggplot2</code> and a few other things. The following post documents a bit about the function and what I’ve learnt.</p>
+<div id="goal" class="section level2">
+<h2>Goal</h2>
+<p>So this is what the final code and plot looks like:</p>
+<pre class="r"><code>plot_chances_football_pitch(
+  ggplot() +
+    # geom_point_football_pitch(data = chances, colour = &quot;red&quot;, alpha = 0.3) +
+    geom_hex_football_pitch(data = chances) +
+    geom_football_pitch() +
+    theme_football_pitch() +
+    labs(title = &quot;Probability of scoring by chance location&quot;,
+       subtitle = str_c(&quot;The closer the chance is to the goal the higher the probability&quot;,
+                        &quot;\n&quot;,
+                        &quot;of scoring&quot;),
+         caption = str_c(&quot;as at 2018-04-11&quot;,
+                         &quot;\n&quot;,
+                         &quot;@tojyouso&quot;),
+       x = NULL, y = NULL)
+)</code></pre>
+<p><img src="/docs/2018-04-11-plotting-football-pitches_files/figure-html/unnamed-chunk-1-1.png" width="672" /></p>
+<p>This is all chances (excluding penalties) in the highest division of the top 5 European football leagues. There were 79127 chances which doesn’t give a meaningful plot so I have summarised them into small hexagons where the lighter the hexagon the higher the proportion of goals scored from that hexagon. So if you ignore the sparse data and focus on where there is volume, it shows that location plays a huge part in the success of a chance.</p>
+<p>I love how simple the code looks and how easy it is to change certain items to get a completely different looking plot:</p>
+<pre class="r"><code>plot_chances_football_pitch(
+  ggplot() +
+    # geom_point_football_pitch(data = chances, colour = &quot;red&quot;, alpha = 0.3) +
+    geom_hex_football_pitch(data = chances,
+                            prop = F,
+                            vir_dir = -1) +
+    geom_football_pitch(line_colour = &quot;black&quot;, background_colour = &quot;white&quot;) +
+    theme_football_pitch(line_colour = &quot;black&quot;, background_colour = &quot;white&quot;) +
+    labs(x = NULL, y = NULL,
+       title = &quot;Open play shots from the top five European leagues&quot;,
+       subtitle = &quot;Most shots are taken within the 18 yard box&quot;,
+       caption = str_c(&quot;as at 2018-04-11&quot;,
+                         &quot;\n&quot;,
+                         &quot;@tojyouso&quot;)),
+  logo_colour = &quot;white&quot;
+)</code></pre>
+<p><img src="/docs/2018-04-11-plotting-football-pitches_files/figure-html/unnamed-chunk-2-1.png" width="672" /></p>
+<p>This plot shows the number of chances within each hexagon and the darker areas are areas where more chances are taken. Apart from a different theme, the plot is showing a count (look at the legend) instead of a proportion like the first one.</p>
+<p>Not sure which one looks better but at least I can switch it up as I like.</p>
+<p>Final example: not only can the function handle hexagonal summaries, it can also plot individual chances. Here is a plot of Romelu Lukaku’s efforts on goal in the dataset:</p>
+<pre class="r"><code>plot_chances_football_pitch(
+  ggplot() +
+    geom_point_football_pitch(data = chances %&gt;% filter(player == &quot;R. Lukaku&quot;),
+                              colour = &quot;red&quot;, alpha = 0.6) +
+    geom_football_pitch() +
+    theme_football_pitch() +
+    labs(title = &quot;Romelu Lukaku&quot;,
+       subtitle = str_c(&quot;Manchester United | 2016/2017 - 2017/2018&quot;),
+         caption = str_c(&quot;as at 2018-04-11&quot;,
+                         &quot;\n&quot;,
+                         &quot;@tojyouso&quot;),
+       x = NULL, y = NULL))</code></pre>
+<p><img src="/docs/2018-04-11-plotting-football-pitches_files/figure-html/unnamed-chunk-3-1.png" width="672" /></p>
+</div>
+<div id="functional-programming-in-ggplot2" class="section level2">
+<h2>Functional programming in ggplot2</h2>
+<p>The plot is made up of a few things as you can see from the code:</p>
+<ol style="list-style-type: decimal">
+<li><code>geom_hex_football_pitch</code></li>
+<li><code>geom_point_football_pitch</code></li>
+<li><code>geom_football_pitch</code></li>
+<li><code>theme_football_pitch</code></li>
+<li>Stratabet logo</li>
+</ol>
+<p>Each of these things relies on function I created. The full code behind each function can be found <a href="">here</a>. I’ll probably be updating it over time so if it’s possible the code examples used in this post might break in the future!</p>
+<p>When I was investigating how to write the code for the plots as a function I came across this <a href="https://stackoverflow.com/questions/4835332/how-can-i-combine-multiple-ggplot2-elements-into-the-return-of-a-function">stackoverflow answer</a> which led me to this <a href="https://rpubs.com/hadley/97970">tutorial</a> by Hadley Wickham on functional programming in <code>ggplot2</code>. The main discovery here was how one can specify a block of <code>ggplot2</code> calls as a list and then insert that into a function. Whenever the function is called, the block of <code>ggplot2</code> code is used.</p>
+<p>I also finally learnt how <code>...</code> works. I call it <strong>the pass through</strong>. It allows you to specify a lower level function argument in a higher level function call. I think that makes sense. It’s best with an example, so here’s the code for the <code>geom_hex_football_pitch</code>:</p>
+<pre class="r"><code># group individual chances into hexagons based on count or other proportional metric
+geom_hex_football_pitch &lt;- function(prop = T,
+                              hex_num = 100,
+                              x_loc = &quot;chance_x&quot;,
+                              y_loc = &quot;chance_y&quot;,
+                              metric = &quot;goal&quot;,
+                              vir_dir = 1,
+                              ...) {
+  if (prop) {
+    
+    # list of ggplot2 code
+    list(
+      stat_summary_hex(bins = hex_num, aes_string(y = y_loc, x = x_loc, z = metric), ...),
+      scale_fill_viridis_c(option = &quot;A&quot;, label = scales::percent, direction = vir_dir)
+    )
+  } else {
+    
+    # another list of ggplot2 code
+    list(
+      stat_bin_hex(bins = hex_num, aes_string(y = y_loc, x = x_loc), ...),
+      scale_fill_viridis_c(option = &quot;A&quot;, label = scales::comma, direction = vir_dir)
+    )
+  }
+}</code></pre>
+<p>Because I’ve specified the pass through as a function argument and also in the <code>stat_summary_hex</code>, I can use any of the arguments in <code>stat_summary_hex</code> when I call <code>geom_hex_football_pitch</code>. That’s what I did in the earlier plots when I used the <code>data</code> argument:</p>
+<pre class="r"><code>geom_hex_football_pitch(data = chances) </code></pre>
+<p>The <code>geom_point_football_pitch</code> works in a very similar way. I was able to use quite a arguments from the <code>geom_point</code> that that function is wrapped around:</p>
+<pre class="r"><code>geom_point_football_pitch(data = chances %&gt;% filter(player == &quot;R. Lukaku&quot;),
+                              colour = &quot;red&quot;, alpha = 0.6) </code></pre>
+</div>
+<div id="drawing-the-pitch" class="section level2">
+<h2>Drawing the pitch</h2>
+<p>The pitch plot is quite simple. It’s made up of straight lines and a couple of curved lines.</p>
+<p>The straight lines were the easiest part - just a simple <code>geom_segment</code> which only needs a start coordinate, an end coordinate and a colour.</p>
+<pre class="r"><code>geom_segment(aes(x = 15, xend = 15, y = -10, yend = 0), colour = line_colour) </code></pre>
+<p>The circles were a bit more difficult. Actually I cheated here a little, they are ellipses but I think they look good enough for what I’m doing. I used yet another package from Thomas Pedersen and the function <code>ggforce::geom_arc</code>. I needed to specify a radius and then how much of the ellipse I wanted. For example, for a complete ellipse, I needed to specify a start and end that spanned <code>2 * pi</code>. Here’s what the code looks like for the corner flag on the right:</p>
+<pre class="r"><code>ggforce::geom_arc(aes(x0 = 136, y0 = 0, start = 1.5 * pi, end = 2 * pi, r = 4), colour = line_colour)</code></pre>
+</div>
+<div id="adding-a-logo" class="section level2">
+<h2>Adding a logo</h2>
+<p>Since the data is kindly provided from Stratagem<a href="#fn2" class="footnoteRef" id="fnref2"><sup>2</sup></a>, I should also include their logo in the plot. What I used to do was save the plot and then paste the logo onto the .png file with another program. But I wanted to investigate how to do this with<code>R</code> so I can avoid the manual process.</p>
+<p>This was not as easy as I thought, I tried quite a few methods before I settled on the final approach. It was great though as I discovered an amazing <code>R</code> package called <code>magick</code><a href="#fn3" class="footnoteRef" id="fnref3"><sup>3</sup></a>. It’s a package that allows for easy manipulation of images with <code>R</code>. There’s a lot you can do like combining plots, rotating plots, creating animations and it uses the pipe.</p>
+<p>I didn’t end up using <code>magick</code> for adding the logo for a couple of reasons:</p>
+<ol style="list-style-type: decimal">
+<li><p>It doesn’t work well with <code>ggplot2</code> objects. Or rather I couldn’t figure out how to use it properly. So I had to save the <code>ggplot2</code> plots to a png file and then import them again using <code>magick</code>. It just didn’t feel like a slick solution</p></li>
+<li><p>I had trouble with printing <code>magick</code> files. They rendered OK when I knitted an <code>rmarkdown</code> file but not when I was using Rstudio notebooks. It didn’t render in-line which was problematic for me since I use those pretty much all the time I’m in <code>R</code>. Again I had to save as png and then import which I didn’t enjoy!</p></li>
+</ol>
+<p>However I did use it for getting the logo in the format I wanted.</p>
+<div id="its-magick" class="section level3">
+<h3>It’s magick!</h3>
+<iframe width="560" height="315" src="https://www.youtube.com/embed/MzlK0OGpIRs" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen>
+</iframe>
+<p>The logo from Stratagem looks like this in its raw form:</p>
+<pre class="r"><code>logo &lt;- magick::image_read(&quot;/Users/mobolayo/Documents/R/stratagem/plots/stratagem.png&quot;)
+
+logo</code></pre>
+<p><img src="/docs/2018-04-11-plotting-football-pitches_files/figure-html/unnamed-chunk-9-1.png" width="188" /></p>
+<p>But to get the logo in the right format for the plot, I had to crop it and add a black background so it goes with the dark theme.</p>
+<pre class="r"><code>logo &lt;- logo %&gt;% 
+  # crop logo
+    magick::image_scale(&quot;200&quot;) %&gt;% 
+  # add black background to the logo
+    magick::image_background(&quot;black&quot;, flatten = T) 
+
+logo</code></pre>
+<p><img src="/docs/2018-04-11-plotting-football-pitches_files/figure-html/unnamed-chunk-10-1.png" width="100" /></p>
+<p>Now the logo was ready to be combined with the original pitch plot.</p>
+</div>
+<div id="adding-the-logo-to-the-plot" class="section level3">
+<h3>Adding the logo to the plot</h3>
+<p>In the end, I went for a simple solution of using <code>annotation_custom</code>. But I had issues with <code>ggplot2</code> clipping so continued searching for an answer before stumbling on yet another <a href="https://stackoverflow.com/questions/12409960/ggplot2-annotate-outside-of-plot">stackoverflow answer</a>. Using the <code>grid</code> package, I was able to go into the <code>ggplot2</code> object and turn off clipping which allowed me to place the logo in the bottom left corner. Nice and flush.</p>
+<p>So here’s the code for the plot without adjusting the clipping:</p>
+<pre class="r"><code># convert logo to format used by `grid`
+logo &lt;- grid::rasterGrob(logo, interpolate = TRUE)
+
+pitch_plot &lt;- ggplot() +
+    # geom_point_football_pitch(data = chances, colour = &quot;red&quot;, alpha = 0.3) +
+    geom_hex_football_pitch(data = chances) +
+    geom_football_pitch() +
+    theme_football_pitch() +
+    labs(title = &quot;Probability of scoring by chance location&quot;,
+       subtitle = str_c(&quot;The closer the chance is to the goal the higher the probability&quot;,
+                        &quot;\n&quot;,
+                        &quot;of scoring&quot;),
+         caption = str_c(&quot;as at 2018-04-11&quot;,
+                         &quot;\n&quot;,
+                         &quot;@tojyouso&quot;),
+       x = NULL, y = NULL) +
+  # add the logo by specifying the xy coords
+  annotation_custom(grob = logo, xmin = -150, xmax = -50, ymin = -45, ymax = 0)
+
+pitch_plot</code></pre>
+<p><img src="/docs/2018-04-11-plotting-football-pitches_files/figure-html/unnamed-chunk-11-1.png" width="672" /></p>
+<p>You can’t see the logo because it’s off the plot and <code>ggplot2</code> by default does not plot it if it not contained within the plot box. Or it will clip it and only keep the part that is within the plot box. By plot box, I mean where the actual data lies excluding the titles, subtitles, captions etc……………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………..</p>
+<p>The following code fixes that:</p>
+<pre class="r"><code># turn off clipping
+gg2 &lt;- ggplot_gtable(ggplot_build(pitch_plot))
+gg2$layout$clip[gg2$layout$name == &quot;panel&quot;] &lt;- &quot;off&quot;
+
+  
+# draw new page
+grid::grid.newpage()
+
+# draw plot without clipping
+grid::grid.draw(gg2)</code></pre>
+<p><img src="/docs/2018-04-11-plotting-football-pitches_files/figure-html/unnamed-chunk-12-1.png" width="672" /></p>
+<p>NB: I had to add <code>grid.newpage()</code> because <code>grid.draw</code> does not produce any plots without it when I’m in an Rstudio notebook. So it’s a small workaround for now.</p>
+</div>
+</div>
+<div id="conclusion-and-next-steps" class="section level2">
+<h2>Conclusion and next steps</h2>
+<p>So that’s it. I finally finished the code to create the plots that I’m satisfied with. Like I mentioned earlier, I’ll be updating this over the next few months as I explore the data further. There are quite a few other plots I’d like to do with the data so maybe this will give me a chance to try out creating a package.</p>
+<p>Anyway, all the code for the function is <a href="https://github.com/tojyouso/stratagem/blob/master/functions/plotPitch.R">here</a></p>
+</div>
+<div class="footnotes">
+<hr />
+<ol>
+<li id="fn1"><p><strong>This article was written with the aid of StrataData, which is property of <a href="www.stratagem.co">Stratagem Technologies</a>. StrataData powers the <a href="https://app.stratabet.com">StrataBet Sports Trading Platform</a>, in addition to <a href="https://stratatips.co">StrataBet Premium Recommendations</a>.</strong><a href="#fnref1">↩</a></p></li>
+<li id="fn2"><p><strong>This article was written with the aid of StrataData, which is property of <a href="www.stratagem.co">Stratagem Technologies</a>. StrataData powers the <a href="https://app.stratabet.com">StrataBet Sports Trading Platform</a>, in addition to <a href="https://stratatips.co">StrataBet Premium Recommendations</a>.</strong><a href="#fnref2">↩</a></p></li>
+<li id="fn3"><p>There’s an awesome <a href="https://cran.r-project.org/web/packages/magick/vignettes/intro.html">vignette</a><a href="#fnref3">↩</a></p></li>
+</ol>
+</div>
