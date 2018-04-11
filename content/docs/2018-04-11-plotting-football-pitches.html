@@ -124,8 +124,8 @@ geom_hex_football_pitch &lt;- function(prop = T,
 </div>
 <div id="adding-a-logo" class="section level2">
 <h2>Adding a logo</h2>
-<p>Since the data is kindly provided from Stratagem<a href="#fn2" class="footnoteRef" id="fnref2"><sup>2</sup></a>, I should also include their logo in the plot. What I used to do was save the plot and then paste the logo onto the .png file with another program. But I wanted to investigate how to do this with<code>R</code> so I can avoid the manual process.</p>
-<p>This was not as easy as I thought, I tried quite a few methods before I settled on the final approach. It was great though as I discovered an amazing <code>R</code> package called <code>magick</code><a href="#fn3" class="footnoteRef" id="fnref3"><sup>3</sup></a>. It’s a package that allows for easy manipulation of images with <code>R</code>. There’s a lot you can do like combining plots, rotating plots, creating animations and it uses the pipe.</p>
+<p>Since the data is kindly provided from Stratagem, I should also include their logo in the plot. What I used to do was save the plot and then paste the logo onto the .png file with another program. But I wanted to investigate how to do this with<code>R</code> so I can avoid the manual process.</p>
+<p>This was not as easy as I thought, I tried quite a few methods before I settled on the final approach. It was great though as I discovered an amazing <code>R</code> package called <code>magick</code><a href="#fn2" class="footnoteRef" id="fnref2"><sup>2</sup></a>. It’s a package that allows for easy manipulation of images with <code>R</code>. There’s a lot you can do like combining plots, rotating plots, creating animations and it uses the pipe.</p>
 <p>I didn’t end up using <code>magick</code> for adding the logo for a couple of reasons:</p>
 <ol style="list-style-type: decimal">
 <li><p>It doesn’t work well with <code>ggplot2</code> objects. Or rather I couldn’t figure out how to use it properly. So I had to save the <code>ggplot2</code> plots to a png file and then import them again using <code>magick</code>. It just didn’t feel like a slick solution</p></li>
@@ -177,7 +177,7 @@ pitch_plot &lt;- ggplot() +
 
 pitch_plot</code></pre>
 <p><img src="/docs/2018-04-11-plotting-football-pitches_files/figure-html/unnamed-chunk-11-1.png" width="672" /></p>
-<p>You can’t see the logo because it’s off the plot and <code>ggplot2</code> by default does not plot it if it not contained within the plot box. Or it will clip it and only keep the part that is within the plot box. By plot box, I mean where the actual data lies excluding the titles, subtitles, captions etc……………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………..</p>
+<p>You can’t see the logo because it’s off the plot and <code>ggplot2</code> by default does not plot it if it not contained within the plot box. Or it will clip it and only keep the part that is within the plot box. By plot box, I mean where the actual data lies excluding the titles, subtitles, captions etc.</p>
 <p>The following code fixes that:</p>
 <pre class="r"><code># turn off clipping
 gg2 &lt;- ggplot_gtable(ggplot_build(pitch_plot))
@@ -202,7 +202,6 @@ grid::grid.draw(gg2)</code></pre>
 <hr />
 <ol>
 <li id="fn1"><p><strong>This article was written with the aid of StrataData, which is property of <a href="www.stratagem.co">Stratagem Technologies</a>. StrataData powers the <a href="https://app.stratabet.com">StrataBet Sports Trading Platform</a>, in addition to <a href="https://stratatips.co">StrataBet Premium Recommendations</a>.</strong><a href="#fnref1">↩</a></p></li>
-<li id="fn2"><p><strong>This article was written with the aid of StrataData, which is property of <a href="www.stratagem.co">Stratagem Technologies</a>. StrataData powers the <a href="https://app.stratabet.com">StrataBet Sports Trading Platform</a>, in addition to <a href="https://stratatips.co">StrataBet Premium Recommendations</a>.</strong><a href="#fnref2">↩</a></p></li>
-<li id="fn3"><p>There’s an awesome <a href="https://cran.r-project.org/web/packages/magick/vignettes/intro.html">vignette</a><a href="#fnref3">↩</a></p></li>
+<li id="fn2"><p>There’s an awesome <a href="https://cran.r-project.org/web/packages/magick/vignettes/intro.html">vignette</a><a href="#fnref2">↩</a></p></li>
 </ol>
 </div>
