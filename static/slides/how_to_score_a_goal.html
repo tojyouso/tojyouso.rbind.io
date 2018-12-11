@@ -1,0 +1,873 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>How to score a goal?</title>
+    <meta charset="utf-8">
+    <meta name="author" content="Toju Idowu" />
+    <link href="libs/remark-css/default.css" rel="stylesheet" />
+    <link href="libs/remark-css/default-fonts.css" rel="stylesheet" />
+  </head>
+  <body>
+    <textarea id="source">
+class: center, middle, inverse, title-slide
+
+# How to score a goal?
+## And tidymodels
+### Toju Idowu
+### 2018/12/10
+
+---
+
+
+
+
+# Hei!
+
+I'm Toju  - (*toe-joo*)
+
+--
+
+* an actuary
+
+--
+
+* from Lagos/London but now living in Oslo
+
+--
+
+* `R` for about 4 years
+
+--
+
+* [@tojyouso](https://twitter.com/tojyouso)
+
+--
+
+* [tojyouso.rbind.io](https://tojyouso.rbind.io)
+
+--
+
+And I freaking love football
+
+---
+class: middle, center
+
+&lt;img src="https://ichef.bbci.co.uk/onesport/cps/624/cpsprodpb/26B8/production/_90621990_52943001.jpg" width="80%" style="display: block; margin: auto;" /&gt;
+
+---
+class: inverse, middle, center
+
+&lt;img src="https://i2-prod.mirror.co.uk/incoming/article9136678.ece/ALTERNATES/s615/European-Champions-League-Cup-Final-1999.jpg" width="80%" style="display: block; margin: auto;" /&gt;
+
+---
+
+class: middle, center
+
+&lt;img src="https://cdn.images.express.co.uk/img/dynamic/67/590x/alex-ferguson-399173.jpg" width="80%" style="display: block; margin: auto;" /&gt;
+
+
+---
+
+# Goal for today
+
+--
+
+* help you to understand *how* to score a goal
+
+--
+
+* showcase of the `tidymodels` package
+
+--
+
+* past, present and future of football analytics
+
+--
+
+* get you about half excited about football as I am
+
+---
+
+# Data
+
+Two sources of data:
+
+* [football-data.co.uk](http://www.football-data.co.uk)
+* Staratbet chance data
+
+Other free sources
+
+* [Statsbomb](https://statsbomb.com/resource-centre/)
+
+.footnote[
+[1] This presentation was written with the aid of StrataData, which is property of Stratagem Technologies. StrataData powers the StrataBet Sports Trading Platform, in addition to StrataBet Premium Recommendations
+]
+
+
+---
+class: middle, center
+
+# How do you score a goal?
+
+---
+class: middle, center
+
+&lt;img src="https://sayingimages.com/wp-content/uploads/dear-diary-funny-soccer-memes.png" width="80%" style="display: block; margin: auto;" /&gt;
+
+---
+
+# Analysis steps
+
+.pull-left[
+
+- import/tidy/transform/visualise etc: `tidyverse`
+
+- modeling: `tidymodels`
+  - sampling (e.g. cross validation and bootstraps): `rsample`
+  - preprocessing (dummy variables, interactions, imputation): `recipes`
+  - modeling: `parsnip` and `dials`
+  - validation: `yarstick` and `broom`
+]
+
+.pull-right[
+&lt;img src="https://r4ds.had.co.nz/diagrams/data-science-explore.png" width="100%" style="display: block; margin: auto;" /&gt;
+
+]
+
+.footnote[
+[1] [source](https://cdn.rawgit.com/ClaytonJY/tidymodels-talk/145e6574/slides.html#36)
+]
+---
+
+# Data
+
+
+```r
+chances &lt;- read_rds(here::here("data/chances"))
+glimpse(chances)
+```
+
+```
+Observations: 104,512
+Variables: 22
+$ date            &lt;date&gt; 2017-05-21, 2017-05-21, 2017-05-21, 2017-05-2...
+$ competition     &lt;chr&gt; "EngPr", "EngPr", "EngPr", "EngPr", "EngPr", "...
+$ hometeam_team1  &lt;chr&gt; "Manchester United", "Chelsea", "Arsenal", "Ar...
+$ awayteam_team2  &lt;chr&gt; "Crystal Palace", "Sunderland", "Everton", "Ev...
+$ team            &lt;chr&gt; "Manchester United", "Chelsea", "Arsenal", "Ar...
+$ player          &lt;chr&gt; "J. Harrop", "Pedro", "Bellerin", "A. Sanchez"...
+$ goal            &lt;fct&gt; 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1...
+$ time            &lt;dbl&gt; 14, 76, 7, 26, 1, 51, 45, 50, 55, 35, 22, 4, 4...
+$ chance_type     &lt;chr&gt; "open play pass", NA, "other", "open play pass...
+$ location_x      &lt;dbl&gt; 34, 25, -2, 12, -3, 3, -49, -34, 15, 10, -34, ...
+$ location_y      &lt;dbl&gt; 44, 10, 33, 29, 35, 3, 39, 105, 38, 35, 57, 42...
+$ body_part       &lt;chr&gt; "foot", "head", "foot", "foot", "foot", "foot"...
+$ def_pressure    &lt;dbl&gt; 4, 3, 2, 0, 3, 3, 2, 0, 2, 2, 1, 1, 4, 4, 2, 2...
+$ num_att_players &lt;dbl&gt; 0, 0, 2, 0, 0, 0, 0, 4, 0, 0, 0, 0, 0, 0, 0, 0...
+$ num_def_players &lt;dbl&gt; 3, 1, 3, 1, 1, 1, 1, 7, 1, 0, 1, 3, 1, 2, 2, 1...
+$ type            &lt;chr&gt; "open play", "open play", "open play", "open p...
+$ assist_type     &lt;chr&gt; "open play pass", NA, "dangerous moment", "ope...
+$ chance_dist     &lt;dbl&gt; 55.605755, 26.925824, 33.060551, 31.384710, 35...
+$ left_post_dist  &lt;dbl&gt; 65.85590, 41.23106, 35.46830, 39.62323, 37.000...
+$ right_post_dist &lt;dbl&gt; 47.92703, 14.14214, 37.12142, 29.15476, 39.357...
+$ chance_angle    &lt;dbl&gt; 0.4314784, 0.5404195, 0.8509660, 0.8527807, 0....
+$ goal_num        &lt;dbl&gt; 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1...
+```
+
+---
+
+# Where are the chances taken from?
+
+&lt;img src="football_love_r_user_group_oslo_files/figure-html/unnamed-chunk-7-1.png" width="50%" style="display: block; margin: auto;" /&gt;
+.footnote[
+[1] This presentation was written with the aid of StrataData, which is property of Stratagem Technologies. StrataData powers the StrataBet Sports Trading Platform, in addition to StrataBet Premium Recommendations
+]
+---
+
+# `geom_football_pitch` (excerpt)
+
+
+```r
+ # 16 yard box
+       geom_segment(aes(x = -37, xend = 37, y = 22, yend = 22), colour = line_colour),
+       geom_segment(aes(x = -37, xend = -37, y = 0, yend = 22), colour = line_colour),
+       geom_segment(aes(x = 37, xend = 37, y = 0, yend = 22), colour = line_colour),
+       
+       # penalty spot
+       geom_point(aes(x = 0, y = 44), colour = line_colour),
+       
+       # centre spot
+       geom_point(aes(x = 0, y = 210), colour = line_colour), 
+       
+       # 18 yard circle
+       ggforce::geom_arc(aes(x0 = 0, y0 = 44, start = 0.24 * pi, end = -0.24 * pi, r = 30), colour = line_colour),
+
+       # centre circle
+       ggforce::geom_arc(aes(x0 = 0, y0 = 210, start = 0.5 * pi, end = 1.5 * pi, r = 30), colour = line_colour),
+```
+
+---
+
+# Location is quite important
+
+&lt;img src="football_love_r_user_group_oslo_files/figure-html/unnamed-chunk-9-1.png" width="50%" style="display: block; margin: auto;" /&gt;
+
+.footnote[
+[1] This presentation was written with the aid of StrataData, which is property of Stratagem Technologies. StrataData powers the StrataBet Sports Trading Platform, in addition to StrataBet Premium Recommendations
+]
+---
+class: middle, center
+
+&lt;iframe width="800" height="600" src="https://www.youtube.com/embed/mvsnAhzQ0Wk" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen&gt;&lt;/iframe&gt;
+
+---
+
+# Encoding the coordinates
+
+The loaction of each chance is recorded as `xy` coordinates. To use them in the model, I created two new variables instead:
+
+* distance from the goal
+* angle formed with the goal posts
+
+
+```r
+goal_centre &lt;- c(0, 0)
+left_post &lt;- c(-15, 0)
+right_post &lt;- c(15, 0)
+
+chances &lt;- 
+  chances &lt;- 
+  mutate(
+   chance_dist = sqrt(location_x ^ 2 + location_y ^ 2),  
+         left_post_dist = sqrt((left_post[[1]] - location_x) ^ 2 +
+                                 (left_post[[2]] - location_y) ^ 2),
+         right_post_dist = sqrt((right_post[[1]] - location_x) ^ 2 +
+                                 (right_post[[2]] - location_y) ^ 2),
+        chance_angle = acos((left_post_dist ^ 2 + right_post_dist ^ 2 - 30 ^ 2) /
+                          (2 * left_post_dist * right_post_dist))
+    )
+```
+
+---
+
+# Distance from the goal
+
+&lt;img src="football_love_r_user_group_oslo_files/figure-html/unnamed-chunk-11-1.png" width="50%" style="display: block; margin: auto;" /&gt;
+.footnote[
+[1] This presentation was written with the aid of StrataData, which is property of Stratagem Technologies. StrataData powers the StrataBet Sports Trading Platform, in addition to StrataBet Premium Recommendations
+]
+---
+
+# Angle between goal posts
+
+.pull-left[
+&lt;img src="football_love_r_user_group_oslo_files/figure-html/unnamed-chunk-12-1.png" width="100%" style="display: block; margin: auto;" /&gt;
+]
+
+--
+
+.pull-right[
+&lt;img src="football_love_r_user_group_oslo_files/figure-html/unnamed-chunk-13-1.png" width="100%" style="display: block; margin: auto;" /&gt;
+
+]
+
+.footnote[
+[1] This presentation was written with the aid of StrataData, which is property of Stratagem Technologies. StrataData powers the StrataBet Sports Trading Platform, in addition to StrataBet Premium Recommendations
+]
+---
+
+# Defensive pressure
+
+A scale of from 1 to 5 on how much pressure is being applied to the player while the chance was taken.
+
+---
+class: middle, center
+
+## no defensive pressure
+
+&lt;iframe width="800" height="600" src="https://www.youtube.com/embed/d3Elg0OBdBM" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen&gt;&lt;/iframe&gt;
+
+---
+class: middle, center
+
+## high defensive pressure
+
+&lt;iframe width="800" height="600" src="https://www.youtube.com/embed/BRGea3Ze8rw" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen&gt;&lt;/iframe&gt;
+
+---
+
+# Number of players between the ball and goal
+
+&lt;img src="football_love_r_user_group_oslo_files/figure-html/unnamed-chunk-14-1.png" width="50%" style="display: block; margin: auto;" /&gt;
+
+.footnote[
+[1] This presentation was written with the aid of StrataData, which is property of Stratagem Technologies. StrataData powers the StrataBet Sports Trading Platform, in addition to StrataBet Premium Recommendations
+]
+---
+
+# The analysts also recorded the type of the chance
+
+.pull-left[
+&lt;img src="football_love_r_user_group_oslo_files/figure-html/unnamed-chunk-15-1.png" width="100%" style="display: block; margin: auto;" /&gt;
+]
+
+--
+
+.pull-right[
+&lt;img src="football_love_r_user_group_oslo_files/figure-html/unnamed-chunk-16-1.png" width="100%" style="display: block; margin: auto;" /&gt;
+]
+
+
+---
+class: middle, center
+
+# What is shot (opposition rebound)?
+--
+&lt;iframe width="800" height="600" src="https://www.youtube.com/embed/HGoLLeL4rA8" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen&gt;&lt;/iframe&gt;
+
+---
+
+# Encoded my own chance type
+
+&lt;img src="football_love_r_user_group_oslo_files/figure-html/unnamed-chunk-17-1.png" width="50%" style="display: block; margin: auto;" /&gt;
+
+.footnote[
+[1] This presentation was written with the aid of StrataData, which is property of Stratagem Technologies. StrataData powers the StrataBet Sports Trading Platform, in addition to StrataBet Premium Recommendations
+]
+---
+class: middle, center
+
+## Why is cross low so high?
+--
+&lt;iframe width="800" height="600" src="https://www.youtube.com/embed/nxVKsccH4xI" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen&gt;&lt;/iframe&gt;
+---
+
+# Surpisingly time seems to have an effect
+
+&lt;img src="football_love_r_user_group_oslo_files/figure-html/unnamed-chunk-18-1.png" width="50%" style="display: block; margin: auto;" /&gt;
+
+.footnote[
+[1] This presentation was written with the aid of StrataData, which is property of Stratagem Technologies. StrataData powers the StrataBet Sports Trading Platform, in addition to StrataBet Premium Recommendations
+]
+---
+# Analysis steps
+
+.pull-left[
+
+- import/tidy/transform/visualise etc: `tidyverse`
+
+- modeling: `tidymodels`
+  - sampling (e.g. cross validation and bootstraps): `rsample`
+  - preprocessing (dummy variables, interactions, imputation): `recipes`
+  - modeling: `parsnip` and `dials`
+  - validation: `yarstick` and `broom`
+]
+
+.pull-right[
+&lt;img src="https://r4ds.had.co.nz/diagrams/data-science-explore.png" width="100%" style="display: block; margin: auto;" /&gt;
+
+]
+
+.footnote[
+[1] [source](https://cdn.rawgit.com/ClaytonJY/tidymodels-talk/145e6574/slides.html#36)
+]
+---
+
+# Set up training and test data
+
+
+```r
+# library(rsample)
+set.seed(6789)
+
+# set indices for training and test split
+chances_split &lt;- initial_split(data = chances, prop = 0.75, strata = "goal")
+
+# create training and test data
+chances_train &lt;- training(chances_split)
+chances_test &lt;- testing(chances_split)
+
+chances_split
+```
+
+```
+&lt;78384/26128/104512&gt;
+```
+
+---
+
+# Five step recipe for preprocessing with `recipes`
+
+--
+
+1. define model formula `recipe()`
+
+--
+
+2. define recipe instructions: `step_*()`
+
+--
+
+3. prepare the recipe: `prep()` and `prepper()`
+
+--
+
+4. build model matrix on new data: `bake()`
+
+--
+
+5. rebuild model matrix on train data: `juice()`
+
+---
+
+# Define model and preprocessing
+
+
+```r
+# library(recipes)
+
+chances_rec &lt;-
+  chances_train %&gt;% 
+  
+  # set the model formula
+  recipe(goal ~ chance_type + time + chance_dist + chance_angle + def_pressure +
+           num_att_players + num_def_players + body_part,
+         data = .) %&gt;% 
+  
+  # preproces data
+  step_mutate(num_att_players = pmin(num_att_players, 3),
+              num_def_players = pmin(num_def_players, 4)) %&gt;% 
+  step_num2factor(starts_with("num"), def_pressure) %&gt;% 
+  step_bs(chance_dist, chance_angle, degree = 3) %&gt;%
+  step_center(all_numeric(), - goal) %&gt;%
+  step_scale(all_numeric(), - goal) %&gt;%
+  step_filter(chance_type != "dangerous moment", skip = TRUE) %&gt;% 
+  step_dummy(all_nominal(), -goal) %&gt;%
+  step_interact(~ starts_with("chance_type"):starts_with("body_part"))
+```
+
+Loads more [recipes](https://tidymodels.github.io/recipes/reference/index.html)
+---
+
+# Only contains instructions (no data)
+
+
+```r
+chances_rec
+```
+
+```
+Data Recipe
+
+Inputs:
+
+      role #variables
+   outcome          1
+ predictor          8
+
+Operations:
+
+Variable mutation for  num_att_players, num_def_players
+Factor variables from starts_with("num"), def_pressure
+B-Splines on chance_dist, chance_angle
+Centering for all_numeric(), -goal
+Scaling for all_numeric(), -goal
+Row filtering
+Dummy variables from all_nominal(), -goal
+Interactions with starts_with("chance_type"):starts_with("body_part")
+```
+
+
+---
+
+# Prep the recipe
+
+
+```r
+chances_prep &lt;- prep(chances_rec, retain = TRUE) 
+
+juice(chances_prep) %&gt;% 
+  glimpse()
+```
+
+```
+Observations: 66,230
+Variables: 49
+$ time                                           &lt;dbl&gt; -1.28995888, -1...
+$ goal                                           &lt;fct&gt; 1, 1, 1, 1, 1, ...
+$ chance_dist_bs_1                               &lt;dbl&gt; -0.25135766, -1...
+$ chance_dist_bs_2                               &lt;dbl&gt; -0.56845478, -1...
+$ chance_dist_bs_3                               &lt;dbl&gt; -0.42892735, -0...
+$ chance_angle_bs_1                              &lt;dbl&gt; 0.2687940, 1.67...
+$ chance_angle_bs_2                              &lt;dbl&gt; -0.20043374, 1....
+$ chance_angle_bs_3                              &lt;dbl&gt; -0.19270545, 0....
+$ chance_type_cross.low                          &lt;dbl&gt; 0, 0, 0, 0, 0, ...
+$ chance_type_dangerous.moment                   &lt;dbl&gt; 0, 0, 0, 0, 0, ...
+$ chance_type_open.play.pass                     &lt;dbl&gt; 1, 0, 1, 0, 1, ...
+$ chance_type_other                              &lt;dbl&gt; 0, 1, 0, 0, 0, ...
+$ chance_type_rebound                            &lt;dbl&gt; 0, 0, 0, 1, 0, ...
+$ chance_type_set.piece                          &lt;dbl&gt; 0, 0, 0, 0, 0, ...
+$ chance_type_set.piece.assist                   &lt;dbl&gt; 0, 0, 0, 0, 0, ...
+$ chance_type_throw.in                           &lt;dbl&gt; 0, 0, 0, 0, 0, ...
+$ chance_type_turnover                           &lt;dbl&gt; 0, 0, 0, 0, 0, ...
+$ def_pressure_X1                                &lt;dbl&gt; 0, 0, 0, 0, 0, ...
+$ def_pressure_X2                                &lt;dbl&gt; 0, 1, 0, 0, 1, ...
+$ def_pressure_X3                                &lt;dbl&gt; 0, 0, 0, 1, 0, ...
+$ def_pressure_X4                                &lt;dbl&gt; 1, 0, 0, 0, 0, ...
+$ def_pressure_X5                                &lt;dbl&gt; 0, 0, 0, 0, 0, ...
+$ num_att_players_X1                             &lt;dbl&gt; 0, 0, 0, 0, 0, ...
+$ num_att_players_X2                             &lt;dbl&gt; 0, 1, 0, 0, 0, ...
+$ num_att_players_X3                             &lt;dbl&gt; 0, 0, 0, 0, 0, ...
+$ num_def_players_X1                             &lt;dbl&gt; 0, 0, 1, 1, 1, ...
+$ num_def_players_X2                             &lt;dbl&gt; 0, 0, 0, 0, 0, ...
+$ num_def_players_X3                             &lt;dbl&gt; 1, 1, 0, 0, 0, ...
+$ num_def_players_X4                             &lt;dbl&gt; 0, 0, 0, 0, 0, ...
+$ body_part_head                                 &lt;dbl&gt; 0, 0, 0, 0, 0, ...
+$ body_part_other                                &lt;dbl&gt; 0, 0, 0, 0, 0, ...
+$ chance_type_cross.low_x_body_part_head         &lt;dbl&gt; 0, 0, 0, 0, 0, ...
+$ chance_type_cross.low_x_body_part_other        &lt;dbl&gt; 0, 0, 0, 0, 0, ...
+$ chance_type_dangerous.moment_x_body_part_head  &lt;dbl&gt; 0, 0, 0, 0, 0, ...
+$ chance_type_dangerous.moment_x_body_part_other &lt;dbl&gt; 0, 0, 0, 0, 0, ...
+$ chance_type_open.play.pass_x_body_part_head    &lt;dbl&gt; 0, 0, 0, 0, 0, ...
+$ chance_type_open.play.pass_x_body_part_other   &lt;dbl&gt; 0, 0, 0, 0, 0, ...
+$ chance_type_other_x_body_part_head             &lt;dbl&gt; 0, 0, 0, 0, 0, ...
+$ chance_type_other_x_body_part_other            &lt;dbl&gt; 0, 0, 0, 0, 0, ...
+$ chance_type_rebound_x_body_part_head           &lt;dbl&gt; 0, 0, 0, 0, 0, ...
+$ chance_type_rebound_x_body_part_other          &lt;dbl&gt; 0, 0, 0, 0, 0, ...
+$ chance_type_set.piece_x_body_part_head         &lt;dbl&gt; 0, 0, 0, 0, 0, ...
+$ chance_type_set.piece_x_body_part_other        &lt;dbl&gt; 0, 0, 0, 0, 0, ...
+$ chance_type_set.piece.assist_x_body_part_head  &lt;dbl&gt; 0, 0, 0, 0, 0, ...
+$ chance_type_set.piece.assist_x_body_part_other &lt;dbl&gt; 0, 0, 0, 0, 0, ...
+$ chance_type_throw.in_x_body_part_head          &lt;dbl&gt; 0, 0, 0, 0, 0, ...
+$ chance_type_throw.in_x_body_part_other         &lt;dbl&gt; 0, 0, 0, 0, 0, ...
+$ chance_type_turnover_x_body_part_head          &lt;dbl&gt; 0, 0, 0, 0, 0, ...
+$ chance_type_turnover_x_body_part_other         &lt;dbl&gt; 0, 0, 0, 0, 0, ...
+```
+
+---
+
+# Standardised modeling interface with `parsnip`
+
+
+```r
+# library(parsnip)
+
+
+lm_fit &lt;- 
+  logistic_reg(mode = "classification") %&gt;% 
+  set_engine("glm") %&gt;%
+  fit(formula(chances_prep), data = juice(chances_prep))
+
+names(lm_fit) 
+```
+
+```
+[1] "lvl"     "spec"    "fit"     "preproc"
+```
+
+---
+
+# The traditional data is stored in `fit`
+
+
+```r
+summary(lm_fit$fit)
+```
+
+```
+
+Call:
+stats::glm(formula = formula, family = stats::binomial, data = data)
+
+Deviance Residuals: 
+    Min       1Q   Median       3Q      Max  
+-2.9771  -0.4943  -0.3533  -0.2573   3.4372  
+
+Coefficients: (5 not defined because of singularities)
+                                                 Estimate Std. Error
+(Intercept)                                     -0.905449   0.115756
+time                                             0.040480   0.012871
+chance_dist_bs_1                                -0.266264   0.069375
+chance_dist_bs_2                                -0.312571   0.072427
+chance_dist_bs_3                                -0.004958   0.034981
+chance_angle_bs_1                                0.380820   0.034020
+chance_angle_bs_2                                0.015505   0.043310
+chance_angle_bs_3                                0.216332   0.031042
+chance_type_cross.low                            0.170156   0.070156
+chance_type_dangerous.moment                           NA         NA
+chance_type_open.play.pass                       0.570417   0.062982
+chance_type_other                                1.039065   0.152840
+chance_type_rebound                              0.987970   0.083596
+chance_type_set.piece                            1.076079   0.108962
+chance_type_set.piece.assist                     0.133197   0.097537
+chance_type_throw.in                             0.530394   0.211179
+chance_type_turnover                             0.592759   0.168262
+def_pressure_X1                                 -0.115344   0.042270
+def_pressure_X2                                 -0.240229   0.042972
+def_pressure_X3                                 -0.364776   0.043746
+def_pressure_X4                                 -0.977753   0.054908
+def_pressure_X5                                 -1.675216   0.108611
+num_att_players_X1                              -0.136230   0.045321
+num_att_players_X2                              -0.190100   0.090587
+num_att_players_X3                               0.213511   0.127427
+num_def_players_X1                              -1.045147   0.096530
+num_def_players_X2                              -1.516443   0.098646
+num_def_players_X3                              -1.661576   0.103171
+num_def_players_X4                              -1.709488   0.111978
+body_part_head                                  -0.419996   0.070385
+body_part_other                                 -1.156162   0.339221
+chance_type_cross.low_x_body_part_head           0.180874   0.253658
+chance_type_cross.low_x_body_part_other         -0.172901   0.493358
+chance_type_dangerous.moment_x_body_part_head          NA         NA
+chance_type_dangerous.moment_x_body_part_other         NA         NA
+chance_type_open.play.pass_x_body_part_head     -0.359516   0.125686
+chance_type_open.play.pass_x_body_part_other     0.301164   0.456839
+chance_type_other_x_body_part_head              -1.155940   0.867595
+chance_type_other_x_body_part_other                    NA         NA
+chance_type_rebound_x_body_part_head             0.017561   0.186340
+chance_type_rebound_x_body_part_other            1.642994   0.521908
+chance_type_set.piece_x_body_part_head          -8.935349 196.967727
+chance_type_set.piece_x_body_part_other                NA         NA
+chance_type_set.piece.assist_x_body_part_head   -0.174952   0.113719
+chance_type_set.piece.assist_x_body_part_other   1.110714   0.502367
+chance_type_throw.in_x_body_part_head           -1.136325   0.637101
+chance_type_throw.in_x_body_part_other          -7.575483 113.039945
+chance_type_turnover_x_body_part_head           -0.611476   1.460717
+chance_type_turnover_x_body_part_other          -9.540946 139.200167
+                                               z value Pr(&gt;|z|)    
+(Intercept)                                     -7.822 5.20e-15 ***
+time                                             3.145 0.001661 ** 
+chance_dist_bs_1                                -3.838 0.000124 ***
+chance_dist_bs_2                                -4.316 1.59e-05 ***
+chance_dist_bs_3                                -0.142 0.887295    
+chance_angle_bs_1                               11.194  &lt; 2e-16 ***
+chance_angle_bs_2                                0.358 0.720335    
+chance_angle_bs_3                                6.969 3.19e-12 ***
+chance_type_cross.low                            2.425 0.015291 *  
+chance_type_dangerous.moment                        NA       NA    
+chance_type_open.play.pass                       9.057  &lt; 2e-16 ***
+chance_type_other                                6.798 1.06e-11 ***
+chance_type_rebound                             11.818  &lt; 2e-16 ***
+chance_type_set.piece                            9.876  &lt; 2e-16 ***
+chance_type_set.piece.assist                     1.366 0.172065    
+chance_type_throw.in                             2.512 0.012019 *  
+chance_type_turnover                             3.523 0.000427 ***
+def_pressure_X1                                 -2.729 0.006357 ** 
+def_pressure_X2                                 -5.590 2.27e-08 ***
+def_pressure_X3                                 -8.338  &lt; 2e-16 ***
+def_pressure_X4                                -17.807  &lt; 2e-16 ***
+def_pressure_X5                                -15.424  &lt; 2e-16 ***
+num_att_players_X1                              -3.006 0.002648 ** 
+num_att_players_X2                              -2.099 0.035858 *  
+num_att_players_X3                               1.676 0.093825 .  
+num_def_players_X1                             -10.827  &lt; 2e-16 ***
+num_def_players_X2                             -15.373  &lt; 2e-16 ***
+num_def_players_X3                             -16.105  &lt; 2e-16 ***
+num_def_players_X4                             -15.266  &lt; 2e-16 ***
+body_part_head                                  -5.967 2.41e-09 ***
+body_part_other                                 -3.408 0.000654 ***
+chance_type_cross.low_x_body_part_head           0.713 0.475806    
+chance_type_cross.low_x_body_part_other         -0.350 0.725996    
+chance_type_dangerous.moment_x_body_part_head       NA       NA    
+chance_type_dangerous.moment_x_body_part_other      NA       NA    
+chance_type_open.play.pass_x_body_part_head     -2.860 0.004231 ** 
+chance_type_open.play.pass_x_body_part_other     0.659 0.509746    
+chance_type_other_x_body_part_head              -1.332 0.182745    
+chance_type_other_x_body_part_other                 NA       NA    
+chance_type_rebound_x_body_part_head             0.094 0.924915    
+chance_type_rebound_x_body_part_other            3.148 0.001644 ** 
+chance_type_set.piece_x_body_part_head          -0.045 0.963817    
+chance_type_set.piece_x_body_part_other             NA       NA    
+chance_type_set.piece.assist_x_body_part_head   -1.538 0.123936    
+chance_type_set.piece.assist_x_body_part_other   2.211 0.027038 *  
+chance_type_throw.in_x_body_part_head           -1.784 0.074491 .  
+chance_type_throw.in_x_body_part_other          -0.067 0.946569    
+chance_type_turnover_x_body_part_head           -0.419 0.675498    
+chance_type_turnover_x_body_part_other          -0.069 0.945355    
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+(Dispersion parameter for binomial family taken to be 1)
+
+    Null deviance: 49966  on 66229  degrees of freedom
+Residual deviance: 41448  on 66186  degrees of freedom
+AIC: 41536
+
+Number of Fisher Scoring iterations: 10
+```
+
+---
+
+# This means we can also use `broom`
+
+
+```r
+broom::tidy(lm_fit$fit) %&gt;% 
+  filter(p.value &lt; 0.01) %&gt;% 
+  head(5)
+```
+
+```
+# A tibble: 5 x 5
+  term              estimate std.error statistic  p.value
+  &lt;chr&gt;                &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;    &lt;dbl&gt;
+1 (Intercept)        -0.905     0.116      -7.82 5.20e-15
+2 time                0.0405    0.0129      3.14 1.66e- 3
+3 chance_dist_bs_1   -0.266     0.0694     -3.84 1.24e- 4
+4 chance_dist_bs_2   -0.313     0.0724     -4.32 1.59e- 5
+5 chance_angle_bs_1   0.381     0.0340     11.2  4.36e-29
+```
+
+---
+
+# So how did we do?
+
+
+```r
+# library(yardstick)
+
+test_baked &lt;- bake(chances_prep, new_data = chances_test)
+
+chances_test %&gt;% 
+  select(goal) %&gt;% 
+  mutate(lm_pred = predict_classprob(lm_fit, new_data = test_baked) %&gt;% 
+           pull(`1`)) %&gt;% 
+  roc_auc(truth = goal, lm_pred) 
+```
+
+```
+# A tibble: 1 x 3
+  .metric .estimator .estimate
+  &lt;chr&gt;   &lt;chr&gt;          &lt;dbl&gt;
+1 roc_auc binary         0.782
+```
+
+---
+
+# Exploring the model
+
+&lt;img src="football_love_r_user_group_oslo_files/figure-html/unnamed-chunk-28-1.png" width="60%" style="display: block; margin: auto;" /&gt;
+
+---
+
+# Future improvements
+
+- New variable such as `game state` and `speed of attack` and `where player facing`
+
+--
+
+- Player or team data??
+
+--
+ 
+- Dangerous moments
+
+--
+
+- New kinds of models, easy to tweak `parsnip`
+
+--
+- More shots! More data
+
+---
+
+
+# Why tidymodels?
+
+--
+
+* Plays nicely with the rest of the tidyverse
+
+--
+
+* Standardised code for many models
+
+--
+
+* Max Kuhn will probably stop adding new features to `caret` (too big)
+
+--
+
+* **BUT** still early days so maybe not ready for production
+
+
+---
+class: middle, center
+
+# Back to football, why xG?
+
+---
+
+class: middle, center
+
+&lt;img src="https://www.optasportspro.com/media/935149/RollingXGAFC_600x300.jpg" width="70%" style="display: block; margin: auto;" /&gt;
+
+[source](https://www.optasportspro.com/about/optapro-blog/posts/2017/blog-expected-goals-explained/)
+
+---
+
+class: middle, center
+
+&lt;img src="https://cdn-images-1.medium.com/max/800/1*lhJMa2z3wFAC0L29rHQ9TQ.png" width="70%" style="display: block; margin: auto;" /&gt;
+
+[source](https://medium.com/@Soccermatics/should-you-write-about-real-goals-or-expected-goals-a-guide-for-journalists-2cf0c7ec6bb6)
+---
+
+# Things to come:
+
+-- 
+
+* Passing models (xG chain)
+
+--
+
+* Training data
+
+--
+
+* Tracking data
+
+
+---
+
+class: middle, center
+
+&lt;img src="https://sayingimages.com/wp-content/uploads/forget-the-game-funny-soccer-memes.png" width="80%" style="display: block; margin: auto;" /&gt;
+    </textarea>
+<script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>
+<script>var slideshow = remark.create({
+"highlightStyle": "github",
+"highlightLines": true,
+"countIncrementalSlides": false,
+"ratio": "16:9"
+});
+if (window.HTMLWidgets) slideshow.on('afterShowSlide', function (slide) {
+  window.dispatchEvent(new Event('resize'));
+});
+(function() {
+  var d = document, s = d.createElement("style"), r = d.querySelector(".remark-slide-scaler");
+  if (!r) return;
+  s.type = "text/css"; s.innerHTML = "@page {size: " + r.style.width + " " + r.style.height +"; }";
+  d.head.appendChild(s);
+})();</script>
+
+<script type="text/x-mathjax-config">
+MathJax.Hub.Config({
+  tex2jax: {
+    skipTags: ['script', 'noscript', 'style', 'textarea', 'pre']
+  }
+});
+</script>
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+(function () {
+  var script = document.createElement('script');
+  script.type = 'text/javascript';
+  script.src  = 'https://cdn.bootcss.com/mathjax/2.7.1/MathJax.js?config=TeX-MML-AM_CHTML';
+  if (location.protocol !== 'file:' && /^https?:/.test(script.src))
+    script.src  = script.src.replace(/^https?:/, '');
+  document.getElementsByTagName('head')[0].appendChild(script);
+})();
+</script>
+  </body>
+</html>
