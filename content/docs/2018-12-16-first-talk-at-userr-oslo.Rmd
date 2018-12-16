@@ -1,0 +1,38 @@
+---
+title: First talk at userR! Oslo
+author: ''
+date: '2018-12-16'
+slug: first-talk-at-userr-oslo
+categories: []
+tags:
+  - R
+  - football
+  - ggplot
+  - tidymodels
+---
+
+So last Monday, I gave my first ever talk at [userR! Oslo](https://www.meetup.com/Oslo-useR-Group/events/255853637/).
+
+If you've come just for the slides, you can find them [here](https://tojyouso.rbind.io/slides/how_to_score_a_goal#1) otherwise I wrote up a short post on why I did this:
+
+I volunteered to do this for four reasons.
+
+1. I wanted to stretch myself and improve my presentation skills
+2. I wanted to explore `tidymodels`
+3. I want to get to know the `R` community better. Both to give back and also to work with other people
+4. And finally, I wanted to actually *finish* one of my football analyses.
+
+There were also lots of things I learnt while preparing for and giving this talk. Here's a quickly written list. It's not ordered in any way:
+
+1. Don't overcomplicate things! It's very difficult to convey really technical details so simple examples are key.
+2. The weekend before the talk, I had serious [imposter syndrome](https://en.wikipedia.org/wiki/Impostor_syndrome) but I assure you that there will be at least one person who will learn something from you. Also the audience was very wecloming and I learnt a lot from other peoples comments and questions.
+2. Bring the data to life - it was a last minute decision to put some video of football events to help describe the data and I had underestimated how much that helped the audience understand what I was saying.
+3. Slow down! This is big for me. I read recently that even though a 5 second pause feels like eternity to you while up there but it is great for the audience to digest the content.
+4. Get there early so you can meet others who are early and develop a rapport. This way, they won't seem so daunting! Also gives you a chance to test out your equipment and make sure everyone can see your slides from the back of the room.
+5. Make it personal. I had gifs and memes in there which did two things. One, made the audience laugh and two they gave me some natural breaks.
+6. Time time time. This I completely failed on, I thought I wouldn't have enough to say but I actually went over my time so it's important to time your talk while you practise.
+7. If you can, invite some friends/colleagues. I invited someone and it was great to have a friendly face in the audience.
+8. Maybe not so much heavy code slides at the end of the presentation and so late in the day. I saw a few yawns as I was wrapping up.
+9. Finally, make sure you have enough water with you. An hour of almost non stop talking is a very long time.
+
+All in all, I recommend it. And if you're in Oslo, [they](https://www.meetup.com/Oslo-useR-Group/) are looking for more speakers from all walks of life and all levels.

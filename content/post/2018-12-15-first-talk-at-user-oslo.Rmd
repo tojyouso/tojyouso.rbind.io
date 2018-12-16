@@ -1,0 +1,34 @@
+---
+title: First talk at useR! Oslo
+author: ''
+date: '2018-12-15'
+slug: first-talk-at-user-oslo
+categories: []
+tags:
+  - R
+  - football
+  - tidy models
+---
+
+Last Monday, I gave my first ever talk at userR! Oslo and I really enjoyed it. Was quite nervous all weekend because I felt I was presenting to a lot of people who knew a lot more about this than I did.
+
+I volunteered to do this for three reasons.
+
+1. I wanted to stretch myself and improve my presentation skills
+2. I wanted to explore `tidymodels`
+3. And finally, I wanted to actually *finish* one of my football analyses.
+
+
+Some things I learnt through this whole process
+
+1. Don't overcomplicate things! It's very difficult to convey really technical details so simple examples are key
+2. Bring the data to life - it was a last minute decision to put some video of footbal events to help describe the data and I had underestimated how much that helped the audience understand what I was saying
+3. Slow down! This is big for me, I read recently that even though a 5 second pause feels like eternity to you while up there it is great for the audience to digest
+4. Get there early so you can meet others who are early and develop a rapport. This way, they won't seem so daunting! Also gives you a chance to test out your equipment and make sure everyone can see your slides from the back of the room
+5. Make it personal. I had gifs and memes in there which did two things. One, made the audience laugh and two gave me some natural breaks.
+6. Time time time. This I completely failed on, I thought I wouldn't have enough to say but I actually went over my time so it's important to time your talk while you practise.
+7. If you can, invite some friends/colleagues. I invited someone and it was great to have a friendly face in the audience
+
+All in all, I recommend it. And if you're in Oslo, they are looking for more speakers from all walks of life and all levels.
+
+So here are the [slides](https://tojyouso.rbind.io/slides/how_to_score_a_goal#1)
