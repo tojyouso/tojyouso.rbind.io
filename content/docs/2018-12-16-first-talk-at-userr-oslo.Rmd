@@ -1,5 +1,5 @@
 ---
-title: First talk at userR! Oslo
+title: First talk at useR! Oslo
 author: ''
 date: '2018-12-16'
 slug: first-talk-at-userr-oslo
@@ -11,7 +11,7 @@ tags:
   - tidymodels
 ---
 
-So last Monday, I gave my first ever talk at [userR! Oslo](https://www.meetup.com/Oslo-useR-Group/events/255853637/).
+So last Monday, I gave my first ever talk at [useR! Oslo](https://www.meetup.com/Oslo-useR-Group/events/255853637/).
 
 If you've come just for the slides, you can find them [here](https://tojyouso.rbind.io/slides/how_to_score_a_goal#1) otherwise I wrote up a short post on why I did this:
 
