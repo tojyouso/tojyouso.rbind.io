@@ -6,6 +6,10 @@ weight: -231
 output: html_document
 ---
 
+#### R Packages
+
++ [footballdataR](https://github.com/tojyouso/footballdatar): helper functions to download football data from [football-data.co.uk](http://www.football-data.co.uk)
+
 #### Shiny apps
 
 Still need to sort out a proper domain to host these but here are a couple of `shiny` apps I've created:
