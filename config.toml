@@ -8,7 +8,7 @@ theme = "minimo"
 
 
 disqusShortname = "https-tojyouso-github-io-1"
-googleAnalytics = UA-75868521-1"
+googleAnalytics = "UA-75868521-1"
 
 # how many posts on each page
 Paginate = 7
