@@ -1,0 +1,179 @@
+---
+title: 'Tidy Tuesday: Bird diversity'
+author: ''
+date: '2019-06-22'
+slug: tidy-tuesday-bird-diversity
+categories: []
+tags:
+  - TidyTuesday
+  - ggforce
+  - ggplot
+  - R
+---
+
+
+
+<p>I can’t believe this is my first <a href="https://github.com/rfordatascience/tidytuesday">#TidyTuesday!</a> If you haven’t tried it, I encourage you to check it out here and check out the <a href="https://twitter.com/search?vertical=default&amp;q=%23TidyTuesday&amp;src=tyah">hashtag on Twitter</a>. This weeks dataset was a deceptively simple set of bird sightings in the Hamilton area of Ontario every Christmas since 1921. In my day job, I’ve been exploring the distribution of hotel bookings and the bird count data has a very similar structure so thought it would be a good time to play with a new distirbution metric - the gini index. On the way, I learnt a couple of new tricks in <code>R</code>:</p>
+<ul>
+<li><code>str_wrap</code> for subtitles without explicit line breaks</li>
+<li><code>ggforce::geom_mark_circle</code> for cool labels</li>
+</ul>
+<p>I tweeted my submission here and code below:</p>
+<div id="set-up" class="section level2">
+<h2>Set up</h2>
+<pre class="r"><code>library(tidyverse)
+library(lubridate)
+library(ggforce)
+
+theme_set(theme_minimal())
+
+# download the data
+bird_counts &lt;- readr::read_csv(&quot;https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2019/2019-06-18/bird_counts.csv&quot;,
+                               col_types = cols(
+  year = col_integer(),
+  species = col_character(),
+  species_latin = col_character(),
+  how_many_counted = col_double(),
+  total_hours = col_double(),
+  how_many_counted_by_hour = col_double()
+)
+                               ) %&gt;% 
+  
+  # saw from the tidy tuesday post that data is only reliable post 1955
+  filter(year &gt;= 1955)</code></pre>
+</div>
+<div id="function-to-calculate-gini-index-for-a-year" class="section level2">
+<h2>Function to calculate gini index for a year</h2>
+<pre class="r"><code>get_gini &lt;- function(.data) {
+  
+  .data %&gt;% 
+    group_by(species) %&gt;% 
+    summarise(how_many_counted = sum(how_many_counted)) %&gt;% 
+    arrange(how_many_counted) %&gt;% 
+    # used row number so we get a diffeent ranking for each species and there no ties
+    mutate(rank_asc = row_number()) %&gt;% 
+    mutate(egal_count = sum(how_many_counted) / n_distinct(species),
+           egal_count = egal_count / sum(egal_count),
+           egal_count = cumsum(egal_count),
+           cum_count = how_many_counted / sum(how_many_counted),
+           cum_count = cumsum(cum_count)) %&gt;% 
+    select(rank_asc, ends_with(&quot;count&quot;)) %&gt;% 
+    summarise(gini = sum(egal_count - cum_count) / max(rank_asc)) %&gt;% 
+    pull(gini)
+  
+}</code></pre>
+</div>
+<div id="gini-index-plot" class="section level2">
+<h2>Gini index plot</h2>
+<p>First, I need to get the stats for number of species to use in labelling the plot and the data for the gini index</p>
+<pre class="r"><code>number_species &lt;- bird_counts %&gt;%
+  filter(how_many_counted &gt; 0) %&gt;% 
+  group_by(year) %&gt;% 
+  summarise(n = n_distinct(species))
+
+
+bird_diversity &lt;- 
+  bird_counts %&gt;% 
+  group_by(year) %&gt;% 
+  nest() %&gt;% 
+  mutate(gini = map_dbl(data, ~ get_gini(.x))) %&gt;% 
+  left_join(
+    number_species,
+    by = &quot;year&quot;
+  )</code></pre>
+<div id="oecd-data-on-gini-index" class="section level4">
+<h4>OECD data on gini index</h4>
+<p>I use this for annotating the plot.</p>
+<pre class="r"><code># https://data.oecd.org/inequality/income-inequality.htm
+oecd_gini &lt;- tibble(
+  country = c(&quot;Chile&quot;, &quot;Mexico&quot;, &quot;Costa Rica&quot;),
+  year = c(2015, 2016, 2017),
+  gini = c(0.45, 0.46, 0.48),
+  x_axis = c(1955, 1956, 2015)
+) %&gt;% 
+  mutate(country = str_c(country, &quot; &quot;, year))</code></pre>
+</div>
+<div id="actual-plot" class="section level3">
+<h3>Actual plot</h3>
+<pre class="r"><code>desc_1955 &lt;- glue::glue(&quot;0.48: Started off with &quot;,
+                        {filter(number_species, year == 1955) %&gt;% pull(n)},
+                        &quot; distinct species and a gini index similar to Costa Rica&quot;)
+
+desc_2016 &lt;- glue::glue(&quot;0.45: Reached Chilean levels in 2015 as number of distinct species increased to &quot;,
+                        {filter(number_species, year == 2016) %&gt;% pull(n)})
+
+
+bird_diversity %&gt;% 
+  
+  
+  ggplot(aes(x = year, y = gini)) +
+  geom_line() +
+  geom_point() +
+  labs(title = &quot;Specie gini index has been dropping since the early 90s&quot;,
+       subtitle = str_wrap(&quot;Gini index measures the amount of equality in number of birds seen by species. A value of 0 incidcates equal bird counts per species while a value of 1 indicates all birds seen were from a single specie&quot;),
+       # y = &quot;gini index&quot;,
+       y= NULL,
+       x = NULL,
+       caption = glue::glue(&quot;country gini source: https://data.oecd.org/inequality/income-inequality.htm
+                            @tojyouso&quot;)) +
+  theme(
+    plot.title = element_text(size = 15,
+                              face = &quot;bold&quot;),
+    panel.grid = element_blank(),
+    axis.text.y = element_blank()
+  ) +
+  scale_x_continuous(breaks = seq(1955, 2015, 5)) +
+  
+  # using ggforce::geom_mark_circle to mark the start and end points
+  geom_mark_circle(aes(filter = year == 1955, description = desc_1955),
+                   label.fontsize = c(0, 10)) +
+  geom_mark_circle(aes(filter = year == 2016, description = desc_2016),
+                   label.fontsize = c(0, 10)) </code></pre>
+<p><img src="/docs/2019-06-22-tidy-tuesday-bird-diversity_files/figure-html/unnamed-chunk-5-1.png" width="672" /></p>
+<p>I also had an alternate version which I also like but I have a thing for plots with no y-axis so went with the first one.</p>
+<pre class="r"><code>bird_diversity %&gt;% 
+  ggplot(aes(x = year, y = gini)) +
+  geom_line() +
+  geom_point() +
+  labs(title = &quot;Diversity of species seen has increased since the early 90s&quot;,
+       subtitle = str_wrap(&quot;Gini index measures the amount of equality in number of birds seen by species. A value of 0 incidcates equal bird counts per species while a value of 1 indicates all birds seen were from a single specie&quot;),
+       y = &quot;gini index&quot;,
+       x = NULL,
+       caption = glue::glue(&quot;country gini source: https://data.oecd.org/inequality/income-inequality.htm
+                            @tojyouso&quot;)) +
+  theme(
+    plot.title = element_text(size = 15,
+                              face = &quot;bold&quot;),
+    panel.grid = element_blank()
+  ) +
+  scale_x_continuous(breaks = seq(1955, 2015, 5)) +
+  geom_hline(aes(yintercept = gini), data = oecd_gini, linetype = &quot;dashed&quot;,
+             size = 0.2) +
+  geom_text(aes(x = x_axis, y = gini ,label = country), vjust = -1,
+                data = oecd_gini, size = 3) </code></pre>
+<p><img src="/docs/2019-06-22-tidy-tuesday-bird-diversity_files/figure-html/unnamed-chunk-6-1.png" width="672" /></p>
+<p>Lastly, I also wanted to check how much the increasing number of species explains the increased diversity:</p>
+<pre class="r"><code>rsq &lt;- bird_diversity %&gt;% 
+  lm(data =.,
+     gini ~ n) %&gt;% 
+  broom::glance() %&gt;% 
+  pull(r.squared)</code></pre>
+<pre class="r"><code>bird_diversity %&gt;% 
+  
+  ggplot(aes(x = n, y = gini, colour = year)) +
+  geom_point(size = 3) +
+  geom_smooth(method = &quot;lm&quot;, se = F, linetype = &quot;dashed&quot;, colour = &quot;black&quot;) +
+  labs(title = &quot;Correlation between number of distinct species and gini index&quot;,
+       subtitle =  str_c(&quot;R squared of &quot;, round(rsq, 2)),
+       x = &quot;# of distinct species&quot;,
+       y = &quot;gini index&quot;) +
+  theme(
+    plot.title = element_text(size = 15,
+                              face = &quot;bold&quot;)
+  ) +
+  scale_colour_viridis_c()</code></pre>
+<p><img src="/docs/2019-06-22-tidy-tuesday-bird-diversity_files/figure-html/unnamed-chunk-8-1.png" width="672" /></p>
+<p>So to conclude, there seems to be a larger variety of species sighted every Christmas and it’s not just driven by the increase in the number of species. That sounds like positive news to me!</p>
+<p>All in all, a very fun Saturday morning! Thanks to all who make this happen.</p>
+</div>
+</div>
