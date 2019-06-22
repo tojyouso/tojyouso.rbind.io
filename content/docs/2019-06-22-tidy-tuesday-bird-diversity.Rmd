@@ -202,10 +202,8 @@ bird_diversity %>%
        subtitle =  str_c("R squared of ", round(rsq, 2)),
        x = "# of distinct species",
        y = "gini index") +
-  theme(
-    plot.title = element_text(size = 15,
-                              face = "bold")
-  ) +
+  theme(plot.title = element_text(size = 15,
+                              face = "bold")) +
   scale_colour_viridis_c()
 ```
 
