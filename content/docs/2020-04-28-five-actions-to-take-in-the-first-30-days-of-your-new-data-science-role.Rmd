@@ -1,0 +1,56 @@
+---
+title: Five actions to take in the first 30 days of your new data science role
+author: 'tojyouso'
+date: '2020-04-28'
+slug: five-actions-new-role
+tags: 
+  - Career
+  - Data Science
+---
+
+After exactly a year and two days, my time as a data analyst at Expedia has come to an end. I am a little sad to be moving on but really excited about the next steps in my career! It’s been a great year that has flown by and I am thankful to have had the opportunity to work for such a global brand with a great mission I believe in.
+
+As one does when they make big life decisions, I have been reflecting. The Expedia job was a career transition for me and going into it I was nervous and worried about whether I would be up to the task (hello impostor syndrome, my old friend).
+
+Thankfully, I was successful in the role and was praised in particular for how quickly I got up to speed with things, so I wanted to capture what I learnt. These actions (in no particular order) are based on my experience as an individual contributing data analyst at an established tech firm so YMMV:
+
+1. A listening tour to meet your team and all your stakeholders
+2. Set up a framework for communicating priorities
+3. Find your data truth — that one high level report that everyone trusts
+4. Get to know the data structure: read the data documentation and get comfortable
+5. Understand the context and business equation
+
+## A listening tour
+
+I set up meetings with all the stakeholders my manager told me I might work with. The list ended up being quite long (about 25 people) but was helpful for me to get to know them, their roles and teams, their concerns and also helpful for them to get to know me. This accelerated my understanding of the company and I got to know who to ask for what quite quickly. Tips:
+
+- I spent the first 5 mins introducing myself and my background and the last 5 mins asking for any advice they had for new starters
+- I asked them about their expectations of me and the rest of the data team. A good framework to use is making three lists for each stakeholder: what do I need to START, STOP or KEEP doing?
+
+## Set up a framework for prioritisation
+
+In every analytical team I have been part of there has always been more work than there is time in the day so at some point you will have to make priority calls. Gauging how long things take and how to prioritise are most difficult at the beginning of a new role. Definitely lean on your manager here and I recommend over-communicating what you are working on (or more likely reading up on) and don’t be afraid to ask for guidelines on how long an assigned task should take.
+
+Early on at my time at Expedia, I was asked to create a smart sample of 50k hotels for an analytical exercise. I read too much into the word smart and spent a couple of days coming up with a formula to pick hotels with a good spread across geographies, star ratings, whether they are independent or part of a chain and multiple other things when all my manager wanted was for me a random sample slightly over indexed in small hotels. I should have clarified and saved myself some time.
+
+## Find your data truth
+
+There is always one data source or report that most people in the company trust. That is your data truth. Before starting any piece of work, always try to reconcile the tables you plan to use with this report or at least match the report with reasonable accuracy. And if you can’t, either don’t use those tables or find out why it doesn’t match (hint: it’s probably due to different attribution models). The more often you do this, the more comfortable you will get with the company’s key high level metrics. I can’t count how many times someone in a meeting would ask “How many bookings did we get in [insert month]?” and I was able to answer because I had just spent 10 minutes reconciling some data. This may not seem like a big deal but it regularly saved us from having 20 minute discussions on issues that when compared to the big picture did not have significant financial impact.
+
+## Get to know the data structure
+
+`DESCRIBE`, `SELECT * FROM <table> LIMIT 100` and `EXPLAIN` will become your best friends as you start working with unfamiliar tables. It'll take some time to get to know which tables to use and how they are partitioned/distributed. I spent A LOT of time with the data dictionary (if there isn't one, then you should probably make one). One thing that helped me get up to speed was going through other people's code - I could quickly see what the most common tables and fields were. Of course this was after I had tried to join two tables by dates (generally a bad idea) where one was PST and the other was GMT. Also remember that you will reuse your queries so in the words of Caitlin Hudon: Git Your SQL Together
+
+Note: SQL is one of the key skills to succeed in any data science role so learn it! When I joined mine were a little limited but I leaned on these fantastic zines by Julia Evans
+
+## Understand the context and business equation
+
+`Profit = Revenue — Costs`
+
+It’s fundamental to understand how the company you work for makes money. Not just so that you can be good at your job but so that you understand how you get paid and will hopefully continue to get paid in the future.
+
+The great thing about this action is you can start it before you join the company. If the company is public, then check out its financial statements — the best way to find these is by googling <company name> investor relations. If the company isn't public, look for interviews with the founders/CEO - they are usually everywhere when the company is raising money. Even if the company isn't public, their competitors might be so read their statements too to get good industry context. I started by reading Expedia's financial statement where I found out their key competitor was Booking Holdings and comparing both learnt the difference between the two main commission models of an online travel agent and how each makes money (this is a good interview question). You will also learn what the most important financial metrics are.
+
+When you start, try to understand the OKRs and company goals for the year. Ask your manager how your role contributes to that. During your listening tour, ask your stakeholders how what they are doing relates to that.
+
+These five actions helped me a lot when I started working at Expedia but I am still on the look out for more tips as I wait to start my new role. So please let me know what you think are the most important actions to take!
