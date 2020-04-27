@@ -5,7 +5,7 @@ copyright = ""
 
 theme = "minimo"
 
-
+ignoreFiles = ["\\.Rmd$", "\\.Rmarkdown$", "_files$", "_cache$"]
 
 disqusShortname = "https-tojyouso-github-io-1"
 googleAnalytics = "UA-75868521-1"
