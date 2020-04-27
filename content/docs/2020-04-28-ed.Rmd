@@ -1,5 +1,17 @@
 ---
 title: Five actions to take in the first 30 days of your new data science role
+author: ''
+date: '2020-04-28'
+slug: five-actions-new-role
+categories: []
+tags:
+  - Career
+  - Data Science
+authors: []
+---
+
+---
+title: Five actions to take in the first 30 days of your new data science role
 author: 'tojyouso'
 date: '2020-04-28'
 slug: five-actions-new-role
